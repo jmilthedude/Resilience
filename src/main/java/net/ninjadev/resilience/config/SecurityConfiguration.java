@@ -25,6 +25,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/add")).hasRole(String.valueOf(ResilienceUser.Role.ADMIN))
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/remove")).hasRole(String.valueOf(ResilienceUser.Role.ADMIN))
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)

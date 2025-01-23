@@ -14,6 +14,7 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -56,10 +57,11 @@ public class ResilienceUserDetailsService implements UserDetailsService {
                     .roles(ResilienceUser.Role.ADMIN.toString())
                     .build();
         }
-        ResilienceUser user = this.userRepository.findByUsername(username);
-        if (user == null) {
+        Optional<ResilienceUser> userOptional = this.userRepository.findByUsername(username);
+        if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
+        ResilienceUser user = userOptional.get();
         return User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())

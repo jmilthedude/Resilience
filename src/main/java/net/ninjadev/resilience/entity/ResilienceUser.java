@@ -1,7 +1,9 @@
 package net.ninjadev.resilience.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,7 @@ public class ResilienceUser {
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
+    @NotNull(message = "Role cannot be empty")
     @Enumerated(EnumType.STRING)
     private Role role;
 
