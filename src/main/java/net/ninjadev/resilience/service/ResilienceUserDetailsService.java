@@ -48,8 +48,6 @@ public class ResilienceUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Authenticating: {}", username);
-        log.info("Admin Role: {}", ResilienceUser.Role.ADMIN);
         if ("admin".equals(username)) {
             return User.builder()
                     .username("admin")
