@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: Resilience
+  profiles:
+    active: local
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yml
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
+
+logging:
+  level:
+    org.hibernate: ERROR
+
+resilience:
+  application-name: Resilience
