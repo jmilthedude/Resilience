@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {Button, Container, Input} from "@mantine/core";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch("/login", {
+        const response = await fetch("http://localhost:8081/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -19,18 +22,18 @@ const LoginPage = () => {
         });
 
         if (response.ok) {
-            window.location.href = "/"; // Redirect to the homepage
+            navigate("/add-user")// Redirect to the homepage
         } else {
             alert("Invalid username or password");
         }
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
+        <Container size="md" style={{ marginTop: "50px", maxWidth: "400px" }}>
+            <h2 style={{marginBottom: "5px"}}>Login</h2>
+            <form onSubmit={handleSubmit} >
                 <div>
-                    <input
+                    <Input style={{marginBottom: "15px"}} radius="lg"
                         type="text"
                         placeholder="Username"
                         value={username}
@@ -39,7 +42,7 @@ const LoginPage = () => {
                     />
                 </div>
                 <div>
-                    <input
+                    <Input radius="lg" style={{marginBottom: "15px"}}
                         type="password"
                         placeholder="Password"
                         value={password}
@@ -47,9 +50,9 @@ const LoginPage = () => {
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+                <Button variant="filled" fullWidth={true} color="teal" radius="lg" type="submit">Login</Button>
             </form>
-        </div>
+        </Container>
     );
 };
 

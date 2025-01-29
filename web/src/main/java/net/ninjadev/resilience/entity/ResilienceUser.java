@@ -39,6 +39,12 @@ public class ResilienceUser {
     @ManyToMany(mappedBy = "users")
     private Set<Account> accounts;
 
+    public ResilienceUser(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
     public enum Role {
         ADMIN,
         USER

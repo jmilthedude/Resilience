@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Button, ComboboxItem, Container, Input, Select} from "@mantine/core";
 
 const AddUserPage = () => {
     const [username, setUsername] = useState("");
@@ -8,8 +9,9 @@ const AddUserPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch("/api/v1/users/add", {
+        const response = await fetch("http://localhost:8081/api/v1/users/add", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -25,13 +27,12 @@ const AddUserPage = () => {
             alert("Failed to add user");
         }
     };
-
     return (
-        <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
+        <Container size="md" style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
             <h2>Add User</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <input
+                    <Input radius="lg" style={{marginBottom: "15px"}}
                         type="text"
                         placeholder="Username"
                         value={username}
@@ -40,7 +41,7 @@ const AddUserPage = () => {
                     />
                 </div>
                 <div>
-                    <input
+                    <Input radius="lg" style={{marginBottom: "15px"}}
                         type="password"
                         placeholder="Password"
                         value={password}
@@ -48,15 +49,9 @@ const AddUserPage = () => {
                         required
                     />
                 </div>
-                <div>
-                    <select value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="USER">User</option>
-                        <option value="ADMIN">Admin</option>
-                    </select>
-                </div>
-                <button type="submit">Add User</button>
+                <Button variant="filled" fullWidth={true} color="teal" radius="lg" type="submit">Submit</Button>
             </form>
-        </div>
+        </Container>
     );
 };
 

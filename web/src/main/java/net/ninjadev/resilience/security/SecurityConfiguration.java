@@ -2,6 +2,7 @@ package net.ninjadev.resilience.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,12 +21,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "static/**").permitAll()
+                        .requestMatchers("/login", "/user-login", "/register", "/static/**", "/error").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .loginPage("/user-login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(((request, response, authentication) -> {
+                            response.setStatus(HttpStatus.OK.value());
+                        }))
                         .permitAll()
                 )
                 .logout(logout -> logout
