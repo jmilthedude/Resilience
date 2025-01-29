@@ -22,7 +22,7 @@ const LoginPage = () => {
         });
 
         if (response.ok) {
-            navigate("/add-user")// Redirect to the homepage
+            navigate("/users/add")// Redirect to the homepage
         } else {
             alert("Invalid username or password");
         }

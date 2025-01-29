@@ -4,17 +4,15 @@ import LoginPage from "./pages/UserLogin";
 import AddUserPage from "./pages/AddUser";
 
 const App = () => {
-
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to="/login"/>}/>
                 <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/add-user" element={<AddUserPage/>}/>
+                <Route path="/users/add" element={<AddUserPage/>}/>
             </Routes>
         </Router>
     )
-
 };
 
 

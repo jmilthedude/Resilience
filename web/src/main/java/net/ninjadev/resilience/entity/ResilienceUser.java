@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.ninjadev.resilience.dto.ResilienceUserDTO;
 
 import java.util.Set;
 
@@ -40,10 +41,10 @@ public class ResilienceUser {
     @ManyToMany(mappedBy = "users")
     private Set<Account> accounts;
 
-    public ResilienceUser(String username, String password, Role role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
+    public ResilienceUser(@Valid ResilienceUserDTO userDto) {
+        this.username = userDto.getUsername();
+        this.password = userDto.getPassword();
+        this.role = userDto.getRole();
     }
 
     public enum Role {

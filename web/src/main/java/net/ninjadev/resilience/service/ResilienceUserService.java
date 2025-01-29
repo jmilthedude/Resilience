@@ -2,6 +2,7 @@ package net.ninjadev.resilience.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import net.ninjadev.resilience.dto.ResilienceUserDTO;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +35,10 @@ public class ResilienceUserService {
 
         this.resilienceUserRepository.save(user);
         return Optional.of(user);
+    }
+
+    public Optional<ResilienceUser> add(@Valid ResilienceUserDTO user) {
+        return this.add(new ResilienceUser(user));
     }
 
     @Transactional
