@@ -1,6 +1,7 @@
 package net.ninjadev.resilience.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +24,7 @@ public class ResilienceUserService {
         return this.resilienceUserRepository.findById(Long.parseLong(id));
     }
 
-    public Optional<ResilienceUser> add(ResilienceUser user) {
+    public Optional<ResilienceUser> add(@Valid ResilienceUser user) {
         if (this.resilienceUserRepository.findByUsername(user.getUsername()).isPresent()) {
             return Optional.empty();
         }

@@ -15,7 +15,7 @@ const AddUserPage = () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, password, role }),
+            body: JSON.stringify({ username, password, role: "USER" }),
         });
 
         if (response.ok) {
@@ -24,7 +24,11 @@ const AddUserPage = () => {
             setPassword("");
             setRole("USER");
         } else {
-            alert("Failed to add user");
+            const errorResponse = await response.json();
+            let error = errorResponse.errors[0];
+            const field = "Invalid " + error.field;
+            const errorMessage = (field + ": " + error.defaultMessage) || "Unknown error";
+            alert(errorMessage);
         }
     };
     return (

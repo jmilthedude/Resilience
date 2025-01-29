@@ -1,6 +1,7 @@
 package net.ninjadev.resilience.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.service.ResilienceUserService;
@@ -24,15 +25,16 @@ public class ResilienceUserController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addUser(@Valid @RequestBody AddUserRequest user) {
-        log.info(user.toString());
-        Optional<ResilienceUser> added = this.resilienceUserService.add(new ResilienceUser(user.username, user.password, user.role));
+        ResilienceUser userToAdd = new ResilienceUser(user.username, user.password, user.role);
+        Optional<ResilienceUser> added = this.resilienceUserService.add(userToAdd);
         if (added.isEmpty()) {
             return ResponseEntity.badRequest().body("User exists.");
         }
         return ResponseEntity.ok("User added successfully: " + user.username);
     }
 
-    public record AddUserRequest(String username, String password, ResilienceUser.Role role){}
+    public record AddUserRequest(String username, @Size(min = 8, max = 20) String password, ResilienceUser.Role role) {
+    }
 
     @DeleteMapping("/delete/{username}")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
