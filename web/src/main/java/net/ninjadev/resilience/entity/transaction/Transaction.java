@@ -1,12 +1,12 @@
-package net.ninjadev.resilience.entity;
+package net.ninjadev.resilience.entity.transaction;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.ninjadev.resilience.entity.Account;
 
 import java.time.LocalDateTime;
 

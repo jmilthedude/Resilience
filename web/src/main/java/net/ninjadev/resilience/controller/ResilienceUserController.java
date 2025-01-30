@@ -1,7 +1,6 @@
 package net.ninjadev.resilience.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.dto.ResilienceUserDTO;
 import net.ninjadev.resilience.entity.ResilienceUser;
@@ -39,5 +38,13 @@ public class ResilienceUserController {
             return ResponseEntity.ok("User deleted successfully.");
         }
         return ResponseEntity.ok("No user found to delete.");
+    }
+
+    @PutMapping("{username}/password")
+    public ResponseEntity<String> updatePassword(@PathVariable("username") String username, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
+        if (this.resilienceUserService.updatePassword(username, oldPassword, newPassword)) {
+            return ResponseEntity.ok("Password updated successfully.");
+        }
+        return ResponseEntity.badRequest().body("Invalid old password or user not found.");
     }
 }

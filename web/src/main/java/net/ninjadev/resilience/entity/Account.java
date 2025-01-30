@@ -6,7 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.ninjadev.resilience.entity.transaction.RecurringTransaction;
+import net.ninjadev.resilience.entity.transaction.Transaction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +40,12 @@ public class Account {
             uniqueConstraints = @UniqueConstraint(columnNames = {"account_id", "user_id"})
     )
     private Set<ResilienceUser> users;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecurringTransaction> recurringTransactions = new ArrayList<>();
 
     public enum Type {
         CHECKING, SAVINGS, CREDIT

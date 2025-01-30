@@ -1,4 +1,4 @@
-package net.ninjadev.resilience.entity;
+package net.ninjadev.resilience.entity.transaction;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

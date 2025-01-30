@@ -30,8 +30,7 @@ public class ResilienceUserService {
             return Optional.empty();
         }
 
-        String encodedPassword = this.passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);  // Set the encoded password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
         this.resilienceUserRepository.save(user);
         return Optional.of(user);
@@ -47,6 +46,22 @@ public class ResilienceUserService {
             return false;
         }
         this.resilienceUserRepository.deleteByUsername(username);
+        return true;
+    }
+
+    public boolean updatePassword(String username, String oldPassword, String newPassword) {
+        Optional<ResilienceUser> user = this.resilienceUserRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            return false;
+        }
+
+        ResilienceUser existingUser = user.get();
+        if (!existingUser.getPassword().equals(oldPassword)) {
+            return false;
+        }
+
+        existingUser.setPassword(this.passwordEncoder.encode(newPassword));
+        this.resilienceUserRepository.save(existingUser);
         return true;
     }
 }
