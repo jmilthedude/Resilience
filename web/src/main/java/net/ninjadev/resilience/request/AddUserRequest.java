@@ -1,4 +1,4 @@
-package net.ninjadev.resilience.dto;
+package net.ninjadev.resilience.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,7 +12,7 @@ import net.ninjadev.resilience.entity.ResilienceUser;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResilienceUserDTO {
+public class AddUserRequest {
     @NotEmpty
     private String username;
     @Size(min = 8, max = 20)
@@ -20,7 +20,7 @@ public class ResilienceUserDTO {
     @NotNull
     private ResilienceUser.Role role;
 
-    public ResilienceUserDTO(@Valid ResilienceUser user) {
+    public AddUserRequest(@Valid ResilienceUser user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.role = user.getRole();

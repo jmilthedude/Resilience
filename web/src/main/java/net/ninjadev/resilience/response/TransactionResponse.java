@@ -1,4 +1,4 @@
-package net.ninjadev.resilience.dto;
+package net.ninjadev.resilience.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,28 +13,28 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDTO {
+public class TransactionResponse {
     private Long id;
-    private AccountDTO account;
+    private AccountResponse account;
     private LocalDateTime transactionDate;
     private double amount;
     private Transaction.Type type;
     private boolean posted;
-    private TransactionCategoryDTO category;
+    private TransactionCategoryResponse category;
     private boolean isRecurring;
     private LocalDate startDate;
     private RecurringTransaction.Frequency frequency;
     private LocalDate endDate;
     private Set<Integer> specificDays;
 
-    public <T extends Transaction> TransactionDTO(T transaction) {
+    public <T extends Transaction> TransactionResponse(T transaction) {
         this.id = transaction.getId();
-        this.account = new AccountDTO(transaction.getAccount());
+        this.account = new AccountResponse(transaction.getAccount());
         this.transactionDate = transaction.getTransactionDate();
         this.amount = transaction.getAmount();
         this.type = transaction.getType();
         this.posted = transaction.isPosted();
-        this.category = new TransactionCategoryDTO(transaction.getCategory());
+        this.category = new TransactionCategoryResponse(transaction.getCategory());
         this.isRecurring = false;
 
         if (transaction instanceof RecurringTransaction recurringTransaction) {

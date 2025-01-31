@@ -11,4 +11,6 @@ public class ResilienceConfiguration {
 
     private String applicationName;
 
+    private String[] adminEndpoints;
+
 }

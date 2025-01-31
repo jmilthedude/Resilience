@@ -2,12 +2,13 @@ package net.ninjadev.resilience.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import net.ninjadev.resilience.dto.ResilienceUserDTO;
+import net.ninjadev.resilience.request.AddUserRequest;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,8 +22,16 @@ public class ResilienceUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Optional<ResilienceUser> findByUsername(String username) {
+        return this.resilienceUserRepository.findByUsername(username);
+    }
+
     public Optional<ResilienceUser> findById(String id) {
         return this.resilienceUserRepository.findById(Long.parseLong(id));
+    }
+
+    public List<ResilienceUser> getAllUsers() {
+        return this.resilienceUserRepository.findAll();
     }
 
     public Optional<ResilienceUser> add(@Valid ResilienceUser user) {
@@ -36,7 +45,7 @@ public class ResilienceUserService {
         return Optional.of(user);
     }
 
-    public Optional<ResilienceUser> add(@Valid ResilienceUserDTO user) {
+    public Optional<ResilienceUser> add(@Valid AddUserRequest user) {
         return this.add(new ResilienceUser(user));
     }
 
@@ -56,7 +65,7 @@ public class ResilienceUserService {
         }
 
         ResilienceUser existingUser = user.get();
-        if (!existingUser.getPassword().equals(oldPassword)) {
+        if (!this.passwordEncoder.matches(oldPassword, existingUser.getPassword())) {
             return false;
         }
 

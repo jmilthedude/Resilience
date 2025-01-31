@@ -1,4 +1,4 @@
-package net.ninjadev.resilience.dto;
+package net.ninjadev.resilience.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,13 +8,13 @@ import net.ninjadev.resilience.entity.Account;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDTO {
+public class AccountResponse {
 
     private Account.Type type;
     private String accountNumber;
     private double balance;
 
-    public AccountDTO(Account account) {
+    public AccountResponse(Account account) {
         this.type = account.getType();
         this.accountNumber = account.getAccountNumber();
         this.balance = account.getBalance();

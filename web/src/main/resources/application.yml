@@ -17,3 +17,5 @@ logging:
 
 resilience:
   application-name: Resilience
+  admin-endpoints:
+    - "/users"
