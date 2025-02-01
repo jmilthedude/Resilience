@@ -13,7 +13,6 @@ spring:
 logging:
   level:
     org.hibernate: ERROR
-    org.springframework.security: DEBUG
 
 resilience:
   application-name: Resilience

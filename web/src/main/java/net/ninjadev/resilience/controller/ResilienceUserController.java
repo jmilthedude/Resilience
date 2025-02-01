@@ -11,6 +11,7 @@ import net.ninjadev.resilience.security.PasswordAuthorization;
 import net.ninjadev.resilience.service.ResilienceUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class ResilienceUserController {
     private final PasswordAuthorization passwordAuthorization;
 
     @GetMapping("{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResilienceUserResponse> getUser(@PathVariable("username") String username) {
         return this.resilienceUserService.findByUsername(username)
                 .map(user -> ResponseEntity.ok(new ResilienceUserResponse(user)))
@@ -34,11 +36,13 @@ public class ResilienceUserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ResilienceUserResponse>> listUsers() {
         return ResponseEntity.ok(this.resilienceUserService.getAllUsers().stream().map(ResilienceUserResponse::new).toList());
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addUser(@Valid @RequestBody AddUserRequest user) {
         Optional<ResilienceUser> added = this.resilienceUserService.add(user);
         if (added.isEmpty()) {
@@ -48,6 +52,7 @@ public class ResilienceUserController {
     }
 
     @DeleteMapping("{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable("username") String username) {
         if (this.resilienceUserService.deleteByUsername(username)) {
             return ResponseEntity.ok("User deleted successfully.");
