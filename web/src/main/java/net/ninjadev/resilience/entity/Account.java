@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.ninjadev.resilience.entity.transaction.RecurringTransaction;
 import net.ninjadev.resilience.entity.transaction.Transaction;
+import net.ninjadev.resilience.request.AddAccountRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,11 @@ public class Account {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecurringTransaction> recurringTransactions = new ArrayList<>();
+
+    public Account(AddAccountRequest accountRequest) {
+        this.type = accountRequest.getType();
+        this.accountNumber = accountRequest.getAccountNumber();
+    }
 
     public enum Type {
         CHECKING, SAVINGS, CREDIT

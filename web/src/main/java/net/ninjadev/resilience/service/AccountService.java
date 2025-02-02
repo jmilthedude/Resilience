@@ -4,6 +4,7 @@ import net.ninjadev.resilience.entity.Account;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.repository.AccountRepository;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
+import net.ninjadev.resilience.request.AddAccountRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,12 @@ public class AccountService {
         return this.accountRepository.findById(Long.parseLong(id));
     }
 
-    public Optional<Account> add(Account account) {
-        return Optional.of(this.accountRepository.save(account));
+    public Optional<Account> add(AddAccountRequest account) {
+        if (this.accountRepository.findByAccountNumber(account.getAccountNumber()).isPresent()) {
+            return Optional.empty();
+        }
+        Account newAccount = new Account(account);
+        return Optional.of(this.accountRepository.save(newAccount));
     }
 
     public void addUserToAccount(ResilienceUser user, Account account) {
@@ -70,4 +75,7 @@ public class AccountService {
     }
 
 
+    public List<Account> getAllAccounts() {
+        return this.accountRepository.findAll();
+    }
 }

@@ -3,14 +3,15 @@ package net.ninjadev.resilience.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.entity.Account;
 import net.ninjadev.resilience.entity.ResilienceUser;
+import net.ninjadev.resilience.request.AddAccountRequest;
 import net.ninjadev.resilience.service.AccountService;
 import net.ninjadev.resilience.service.ResilienceUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,30 +27,41 @@ public class AccountController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Account account) {
+    @GetMapping
+    public ResponseEntity<List<Account>> getAllAccounts() {
+        return ResponseEntity.ok(this.accountService.getAllAccounts());
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Account> getAccount(@PathVariable("id") String id) {
+        return this.accountService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addAccount(@RequestBody AddAccountRequest account) {
         try {
-            this.accountService.add(account);
-            return ResponseEntity.ok("Account Added: id=" + account.getId());
+            return this.accountService.add(account)
+                    .map(added -> ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(added.getId())))
+                    .orElse(ResponseEntity.badRequest().body("Account exists."));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Account Addition Failed: error=" + ex.getMessage());
         }
     }
 
-    @PostMapping("/addUserToAccount")
-    public ResponseEntity<String> add(@RequestParam String accountId, @RequestParam String userId) {
+    @PutMapping("/{accountId}/addUser/{userId}")
+    public ResponseEntity<String> addUserToAccount(@PathVariable("accountId") String accountId, @PathVariable("userId") String userId) {
         try {
-            Optional<ResilienceUser> user = this.userService.findById(userId);
-            Optional<Account> account = this.accountService.findById(accountId);
-            this.accountService.addUserToAccount(user.get(), account.get());
-            return ResponseEntity.ok("User added to account: user=%s, accountId=%s".formatted(user.get().getUsername(), account.get().getId()));
+            ResilienceUser user = this.userService.findById(userId).orElseThrow();
+            Account account = this.accountService.findById(accountId).orElseThrow();
+            this.accountService.addUserToAccount(user, account);
+            return ResponseEntity.ok("User added to account: user=%s, accountId=%s".formatted(user.getUsername(), account.getId()));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Account Addition Failed: error=" + ex.getMessage());
         }
     }
 
-    @GetMapping("getByUserId")
-    public ResponseEntity<List<Account>> getByUserId(@RequestParam Long userId) {
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<Account>> getByUserId(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(this.accountService.getByUserId(userId));
     }
 }
