@@ -29,22 +29,24 @@ public class TransactionResponse {
     private LocalDate endDate;
     private Set<Integer> specificDays;
 
-    public <T extends Transaction> TransactionResponse(T transaction) {
-        this.id = transaction.getId();
-        this.account = new AccountResponse(transaction.getAccount());
-        this.transactionDate = transaction.getTransactionDate();
-        this.amount = transaction.getAmount();
-        this.type = transaction.getType();
-        this.posted = transaction.isPosted();
-        this.category = new TransactionCategoryResponse(transaction.getCategory());
-        this.isRecurring = false;
+    public static <T extends Transaction> TransactionResponse fromTransaction(T transaction) {
+        TransactionResponse response = new TransactionResponse();
+        response.id = transaction.getId();
+        response.account = new AccountResponse(transaction.getAccount());
+        response.transactionDate = transaction.getTransactionDate();
+        response.amount = transaction.getAmount();
+        response.type = transaction.getType();
+        response.posted = transaction.isPosted();
+        response.category = new TransactionCategoryResponse(transaction.getCategory());
+        response.isRecurring = false;
 
         if (transaction instanceof RecurringTransaction recurringTransaction) {
-            this.isRecurring = true;
-            this.startDate = recurringTransaction.getStartDate();
-            this.frequency = recurringTransaction.getFrequency();
-            this.endDate = recurringTransaction.getEndDate();
-            this.specificDays = recurringTransaction.getSpecificDays();
+            response.isRecurring = true;
+            response.startDate = recurringTransaction.getStartDate();
+            response.frequency = recurringTransaction.getFrequency();
+            response.endDate = recurringTransaction.getEndDate();
+            response.specificDays = recurringTransaction.getSpecificDays();
         }
+        return response;
     }
 }
