@@ -24,7 +24,7 @@ public class RecurringTransaction extends Transaction {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Frequency frequency; // How often the transaction repeats
+    private TransactionFrequency frequency; // How often the transaction repeats
 
     @Nullable
     private LocalDate endDate; // Optional end date for recurrence
@@ -33,10 +33,6 @@ public class RecurringTransaction extends Transaction {
     @CollectionTable(name = "specific_recurrence_days", joinColumns = @JoinColumn(name = "recurring_transaction_id"))
     @Column(name = "day_of_month")
     private final Set<Integer> specificDays = new HashSet<>();
-
-    public enum Frequency {
-        DAILY, WEEKLY, MONTHLY, YEARLY, SPECIFIC_DAYS
-    }
 
     @PrePersist
     public void initStartDate() {

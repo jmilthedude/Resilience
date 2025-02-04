@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.ninjadev.resilience.entity.transaction.RecurringTransaction;
 import net.ninjadev.resilience.entity.transaction.Transaction;
+import net.ninjadev.resilience.entity.transaction.TransactionFrequency;
+import net.ninjadev.resilience.entity.transaction.TransactionType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,12 +20,12 @@ public class TransactionResponse {
     private AccountResponse account;
     private LocalDateTime transactionDate;
     private double amount;
-    private Transaction.Type type;
+    private TransactionType type;
     private boolean posted;
     private TransactionCategoryResponse category;
     private boolean isRecurring;
     private LocalDate startDate;
-    private RecurringTransaction.Frequency frequency;
+    private TransactionFrequency frequency;
     private LocalDate endDate;
     private Set<Integer> specificDays;
 

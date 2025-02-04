@@ -33,7 +33,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Type type;
+    private TransactionType type;
 
     @NotNull
     private boolean posted; // True if the transaction has been posted
@@ -42,8 +42,4 @@ public class Transaction {
     @JoinColumn(name = "category_id")
     @NotNull
     private TransactionCategory category;
-
-    public enum Type {
-        CREDIT, DEBIT
-    }
 }
