@@ -25,7 +25,18 @@ public class SecurityConfiguration {
         http
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/user-login", "/register", "/static/**", "/error").permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/user-login",
+                                "/register",
+                                "/static/**",
+                                "/error")
+                        .permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",    // Allow access to OpenAPI docs
+                                "/swagger-ui/**",     // Allow access to Swagger UI
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/user-login")

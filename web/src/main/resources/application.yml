@@ -10,9 +10,16 @@ spring:
     username: root
     password: password
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 logging:
   level:
     org.hibernate: ERROR
+    org.springdoc: DEBUG
 
 resilience:
   application-name: Resilience
