@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.entity.Account;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.request.AddAccountRequest;
+import net.ninjadev.resilience.response.AccountResponse;
 import net.ninjadev.resilience.service.AccountService;
 import net.ninjadev.resilience.service.ResilienceUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,13 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        return ResponseEntity.ok(this.accountService.getAllAccounts());
+    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
+        return ResponseEntity.ok(this.accountService.getAllAccounts().stream().map(AccountResponse::new).toList());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Account> getAccount(@PathVariable("id") String id) {
-        return this.accountService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<AccountResponse> getAccount(@PathVariable("id") String id) {
+        return this.accountService.findById(id).map(AccountResponse::new).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -61,7 +62,7 @@ public class AccountController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Account>> getByUserId(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(this.accountService.getByUserId(userId));
+    public ResponseEntity<List<AccountResponse>> getByUserId(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(this.accountService.getByUserId(userId).stream().map(AccountResponse::new).toList());
     }
 }
