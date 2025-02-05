@@ -29,7 +29,7 @@ public class RecurringTransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable("id") Long id) {
+    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable Long id) {
         return recurringTransactionService.getTransactionById(id)
                 .map(TransactionResponse::fromTransaction)
                 .map(ResponseEntity::ok)
@@ -46,7 +46,7 @@ public class RecurringTransactionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionResponse> updateTransaction(@PathVariable("id") Long id, @RequestBody @Valid RecurringTransaction transaction) {
+    public ResponseEntity<TransactionResponse> updateTransaction(@PathVariable Long id, @RequestBody @Valid RecurringTransaction transaction) {
         return recurringTransactionService.updateTransaction(id, transaction)
                 .map(TransactionResponse::fromTransaction)
                 .map(ResponseEntity::ok)
@@ -54,7 +54,7 @@ public class RecurringTransactionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         recurringTransactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

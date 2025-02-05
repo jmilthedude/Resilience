@@ -34,7 +34,7 @@ public class AccountController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AccountResponse> getAccount(@PathVariable("id") String id) {
+    public ResponseEntity<AccountResponse> getAccount(@PathVariable String id) {
         return this.accountService.findById(id).map(AccountResponse::new).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @PutMapping("/{accountId}/addUser/{userId}")
-    public ResponseEntity<String> addUserToAccount(@PathVariable("accountId") String accountId, @PathVariable("userId") String userId) {
+    public ResponseEntity<String> addUserToAccount(@PathVariable String accountId, @PathVariable String userId) {
         try {
             ResilienceUser user = this.userService.findById(userId).orElseThrow();
             Account account = this.accountService.findById(accountId).orElseThrow();
@@ -62,7 +62,7 @@ public class AccountController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<AccountResponse>> getByUserId(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<AccountResponse>> getByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(this.accountService.getByUserId(userId).stream().map(AccountResponse::new).toList());
     }
 }

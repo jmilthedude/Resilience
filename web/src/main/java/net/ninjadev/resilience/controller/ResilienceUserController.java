@@ -29,7 +29,7 @@ public class ResilienceUserController {
 
     @GetMapping("{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResilienceUserResponse> getUser(@PathVariable("username") String username) {
+    public ResponseEntity<ResilienceUserResponse> getUser(@PathVariable String username) {
         return this.resilienceUserService.findByUsername(username)
                 .map(user -> ResponseEntity.ok(new ResilienceUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
@@ -53,7 +53,7 @@ public class ResilienceUserController {
 
     @DeleteMapping("{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteUserByUsername(@PathVariable("username") String username) {
+    public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
         if (this.resilienceUserService.deleteByUsername(username)) {
             return ResponseEntity.ok("User deleted successfully.");
         }
@@ -61,7 +61,7 @@ public class ResilienceUserController {
     }
 
     @PutMapping("{username}/password")
-    public ResponseEntity<String> updatePassword(@PathVariable("username") String username, @RequestBody @Valid UpdatePasswordRequest request, Authentication authentication) {
+    public ResponseEntity<String> updatePassword(@PathVariable String username, @RequestBody @Valid UpdatePasswordRequest request, Authentication authentication) {
         String authenticatedUser = authentication.getName();
         if (!this.passwordAuthorization.canUpdatePassword(username, authentication)) {
             log.warn("Failed password update attempt. Authenticated User={}, Targeted User={}", authenticatedUser, username);
