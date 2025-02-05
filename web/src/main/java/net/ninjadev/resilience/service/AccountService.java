@@ -1,11 +1,13 @@
 package net.ninjadev.resilience.service;
 
+import lombok.RequiredArgsConstructor;
 import net.ninjadev.resilience.entity.Account;
 import net.ninjadev.resilience.entity.ResilienceUser;
+import net.ninjadev.resilience.entity.transaction.Transaction;
 import net.ninjadev.resilience.repository.AccountRepository;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
+import net.ninjadev.resilience.repository.transaction.TransactionRepository;
 import net.ninjadev.resilience.request.AddAccountRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -14,16 +16,12 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
     private final ResilienceUserRepository userRepository;
-
-    @Autowired
-    public AccountService(AccountRepository accountRepository, ResilienceUserRepository userRepository) {
-        this.accountRepository = accountRepository;
-        this.userRepository = userRepository;
-    }
 
     public Optional<Account> findById(String id) {
         return this.accountRepository.findById(Long.parseLong(id));
@@ -82,4 +80,18 @@ public class AccountService {
     public void update(Account account) {
         this.accountRepository.save(account);
     }
+
+    public double getPendingBalance(long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for ID: " + accountId));
+
+        List<Transaction> pendingTransactions = transactionRepository.findPendingTransactionsByAccountId(accountId);
+
+        double pendingTransactionSum = pendingTransactions.stream()
+                .mapToDouble(Transaction::getAmount)
+                .sum();
+
+        return account.getBalance() + pendingTransactionSum;
+    }
+
 }
