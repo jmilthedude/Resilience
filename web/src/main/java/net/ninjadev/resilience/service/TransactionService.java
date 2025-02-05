@@ -16,7 +16,6 @@ import java.util.Optional;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
 
-
     public List<Transaction> getAllTransactions() {
         return this.transactionRepository.findAll();
     }

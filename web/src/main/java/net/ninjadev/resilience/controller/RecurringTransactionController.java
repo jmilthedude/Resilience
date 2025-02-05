@@ -1,9 +1,9 @@
 package net.ninjadev.resilience.controller;
 
 import jakarta.validation.Valid;
-import net.ninjadev.resilience.entity.transaction.Transaction;
+import net.ninjadev.resilience.entity.transaction.RecurringTransaction;
 import net.ninjadev.resilience.response.TransactionResponse;
-import net.ninjadev.resilience.service.TransactionService;
+import net.ninjadev.resilience.service.RecurringTransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/transactions")
-public class TransactionController {
+@RequestMapping("/api/v1/transactions/recurring")
+public class RecurringTransactionController {
 
-    private final TransactionService transactionService;
+    private final RecurringTransactionService recurringTransactionService;
 
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    public RecurringTransactionController(RecurringTransactionService recurringTransactionService) {
+        this.recurringTransactionService = recurringTransactionService;
     }
 
     @GetMapping
     public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
-        return ResponseEntity.ok(transactionService.getAllTransactions().stream()
+        return ResponseEntity.ok(recurringTransactionService.getAllTransactions().stream()
                 .map(TransactionResponse::fromTransaction)
                 .toList()
         );
@@ -30,23 +30,24 @@ public class TransactionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable("id") Long id) {
-        return transactionService.getTransactionById(id)
+        return recurringTransactionService.getTransactionById(id)
                 .map(TransactionResponse::fromTransaction)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build()
+                );
     }
 
     @PostMapping
-    public ResponseEntity<TransactionResponse> createTransaction(@RequestBody @Valid Transaction transaction) {
-        return transactionService.createTransaction(transaction)
+    public ResponseEntity<TransactionResponse> createTransaction(@RequestBody @Valid RecurringTransaction transaction) {
+        return recurringTransactionService.createTransaction(transaction)
                 .map(TransactionResponse::fromTransaction)
                 .map(createdTransaction -> ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction))
                 .orElse(ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionResponse> updateTransaction(@PathVariable("id") Long id, @RequestBody @Valid Transaction transaction) {
-        return transactionService.updateTransaction(id, transaction)
+    public ResponseEntity<TransactionResponse> updateTransaction(@PathVariable("id") Long id, @RequestBody @Valid RecurringTransaction transaction) {
+        return recurringTransactionService.updateTransaction(id, transaction)
                 .map(TransactionResponse::fromTransaction)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
@@ -54,7 +55,7 @@ public class TransactionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable("id") Long id) {
-        transactionService.deleteTransaction(id);
+        recurringTransactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

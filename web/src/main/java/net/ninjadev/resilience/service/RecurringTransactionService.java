@@ -1,6 +1,7 @@
 package net.ninjadev.resilience.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.entity.transaction.RecurringTransaction;
@@ -9,8 +10,10 @@ import net.ninjadev.resilience.repository.transaction.RecurringTransactionReposi
 import net.ninjadev.resilience.repository.transaction.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.channels.FileChannel;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -53,8 +56,7 @@ public class RecurringTransactionService {
         }
     }
 
-    private Transaction createTransactionFromRecurring(
-            RecurringTransaction recurringTransaction, LocalDate transactionDate) {
+    private Transaction createTransactionFromRecurring(RecurringTransaction recurringTransaction, LocalDate transactionDate) {
         Transaction transaction = new Transaction();
         transaction.setAccount(recurringTransaction.getAccount());
         transaction.setAmount(recurringTransaction.getAmount());
@@ -64,4 +66,29 @@ public class RecurringTransactionService {
         return transaction;
     }
 
+    public List<RecurringTransaction> getAllTransactions() {
+        return this.recurringTransactionRepository.findAll();
+    }
+
+    public Optional<RecurringTransaction> getTransactionById(Long id) {
+        return this.recurringTransactionRepository.findById(id);
+    }
+
+    public Optional<RecurringTransaction> createTransaction(@Valid RecurringTransaction transaction) {
+        return Optional.of(this.recurringTransactionRepository.save(transaction));
+    }
+
+    public Optional<RecurringTransaction> updateTransaction(Long id, @Valid RecurringTransaction transaction) {
+        return this.recurringTransactionRepository.findById(id)
+                .map(existingTransaction -> {
+                    existingTransaction.setAmount(transaction.getAmount());
+                    existingTransaction.setCategory(transaction.getCategory());
+                    existingTransaction.setType(transaction.getType());
+                    return this.recurringTransactionRepository.save(existingTransaction);
+                });
+    }
+
+    public void deleteTransaction(Long id) {
+        this.recurringTransactionRepository.deleteById(id);
+    }
 }
