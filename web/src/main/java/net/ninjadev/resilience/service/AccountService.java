@@ -78,4 +78,8 @@ public class AccountService {
     public List<Account> getAllAccounts() {
         return this.accountRepository.findAll();
     }
+
+    public void update(Account account) {
+        this.accountRepository.save(account);
+    }
 }

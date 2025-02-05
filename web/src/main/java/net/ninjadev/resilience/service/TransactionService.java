@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.entity.transaction.Transaction;
 import net.ninjadev.resilience.repository.transaction.TransactionRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TransactionService {
     private final TransactionRepository transactionRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public List<Transaction> getAllTransactions() {
         return this.transactionRepository.findAll();
@@ -25,7 +27,9 @@ public class TransactionService {
     }
 
     public Optional<Transaction> createTransaction(@Valid Transaction transaction) {
-        return Optional.of(this.transactionRepository.save(transaction));
+        Optional<Transaction> savedTransaction = Optional.of(this.transactionRepository.save(transaction));
+        savedTransaction.ifPresent(eventPublisher::publishEvent);
+        return savedTransaction;
     }
 
     public Optional<Transaction> updateTransaction(Long id, @Valid Transaction transaction) {
