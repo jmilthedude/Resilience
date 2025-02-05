@@ -57,4 +57,12 @@ public class TransactionController {
         transactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PatchMapping("/{id}/posted")
+    public ResponseEntity<Void> markTransactionAsPosted(@PathVariable("id") Long id) {
+        return transactionService.markTransactionAsPosted(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
+
 }

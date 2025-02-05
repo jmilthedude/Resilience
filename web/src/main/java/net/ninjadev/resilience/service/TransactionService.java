@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.entity.transaction.Transaction;
+import net.ninjadev.resilience.event.TransactionPostedEvent;
 import net.ninjadev.resilience.repository.transaction.TransactionRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,23 @@ public class TransactionService {
     }
 
     public Optional<Transaction> createTransaction(@Valid Transaction transaction) {
-        Optional<Transaction> savedTransaction = Optional.of(this.transactionRepository.save(transaction));
-        savedTransaction.ifPresent(eventPublisher::publishEvent);
-        return savedTransaction;
+        Transaction savedTransaction = this.transactionRepository.save(transaction);
+        if (transaction.isPosted()) {
+            this.eventPublisher.publishEvent(savedTransaction);
+        }
+        return Optional.of(savedTransaction);
+    }
+
+    public boolean markTransactionAsPosted(long id) {
+        Optional<Transaction> transaction = this.transactionRepository.findById(id);
+        if (transaction.isEmpty()) {
+            return false;
+        }
+        Transaction existingTransaction = transaction.get();
+        existingTransaction.setPosted(true);
+        this.transactionRepository.save(existingTransaction);
+        this.eventPublisher.publishEvent(new TransactionPostedEvent(existingTransaction));
+        return true;
     }
 
     public Optional<Transaction> updateTransaction(Long id, @Valid Transaction transaction) {
