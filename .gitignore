@@ -34,3 +34,4 @@ build/
 
 **/src/main/resources/admin-password.txt
 /data/
+web/src/main/resources/static/*
