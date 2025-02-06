@@ -10,5 +10,4 @@ public interface TransactionRepository extends BaseTransactionRepository<Transac
 
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :accountId AND t.posted = false")
     List<Transaction> findPendingTransactionsByAccountId(@Param("accountId") Long accountId);
-
 }

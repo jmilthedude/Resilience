@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -64,4 +62,18 @@ public class RecurringTransaction extends Transaction {
         }
         return lastTransactionDate.plusMonths(1).withDayOfMonth(specificDays.iterator().next());
     }
+
+    public List<LocalDate> computeAllOccurrences(LocalDate start, LocalDate end) {
+        List<LocalDate> occurrences = new ArrayList<>();
+
+        LocalDate nextDate = this.getNextTransactionDate(start.isAfter(this.getStartDate()) ? start : this.getStartDate()).orElse(null);
+
+        while (nextDate != null && !nextDate.isAfter(end)) {
+            occurrences.add(nextDate); // Add the valid date
+            nextDate = this.getNextTransactionDate(nextDate).orElse(null); // Get the next occurrence
+        }
+        return occurrences;
+    }
+
+
 }

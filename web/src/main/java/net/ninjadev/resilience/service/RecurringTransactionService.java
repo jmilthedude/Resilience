@@ -10,7 +10,6 @@ import net.ninjadev.resilience.repository.transaction.RecurringTransactionReposi
 import net.ninjadev.resilience.repository.transaction.TransactionRepository;
 import org.springframework.stereotype.Service;
 
-import java.nio.channels.FileChannel;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
