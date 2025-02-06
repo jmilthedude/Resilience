@@ -18,14 +18,14 @@ import java.util.*;
 @AllArgsConstructor
 public class RecurringTransaction extends Transaction {
     @NotNull
-    private LocalDate startDate; // The date the recurrence starts
+    private LocalDate startDate;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionFrequency frequency; // How often the transaction repeats
+    private TransactionFrequency frequency;
 
     @Nullable
-    private LocalDate endDate; // Optional end date for recurrence
+    private LocalDate endDate;
 
     @ElementCollection
     @CollectionTable(name = "specific_recurrence_days", joinColumns = @JoinColumn(name = "recurring_transaction_id"))
@@ -41,7 +41,7 @@ public class RecurringTransaction extends Transaction {
 
     public Optional<LocalDate> getNextTransactionDate(LocalDate lastTransactionDate) {
         if (endDate != null && lastTransactionDate.isAfter(endDate)) {
-            return Optional.empty(); // Recurring transaction has ended
+            return Optional.empty();
         }
 
         return switch (frequency) {
@@ -54,26 +54,49 @@ public class RecurringTransaction extends Transaction {
     }
 
     private LocalDate getNextSpecificDay(LocalDate lastTransactionDate) {
-        for (int day : specificDays) {
-            LocalDate potentialDate = lastTransactionDate.withDayOfMonth(day);
+        List<Integer> sortedDays = specificDays.stream().sorted().toList();
+
+        for (int day : sortedDays) {
+            LocalDate potentialDate;
+            try {
+                potentialDate = lastTransactionDate.withDayOfMonth(Math.min(day, lastTransactionDate.lengthOfMonth()));
+            } catch (Exception e) {
+                continue;
+            }
             if (potentialDate.isAfter(lastTransactionDate)) {
                 return potentialDate;
             }
         }
-        return lastTransactionDate.plusMonths(1).withDayOfMonth(specificDays.iterator().next());
+        LocalDate nextMonth = lastTransactionDate.plusMonths(1);
+        int firstDay = sortedDays.get(0);
+        return nextMonth.withDayOfMonth(Math.min(firstDay, nextMonth.lengthOfMonth()));
+    }
+
+    private boolean isSpecificDay(LocalDate date) {
+        return specificDays.contains(date.getDayOfMonth());
     }
 
     public List<LocalDate> computeAllOccurrences(LocalDate start, LocalDate end) {
+        if(start == null || end == null) {
+            throw new IllegalArgumentException("Start and end dates cannot be null");
+        }
+
         List<LocalDate> occurrences = new ArrayList<>();
 
-        LocalDate nextDate = this.getNextTransactionDate(start.isAfter(this.getStartDate()) ? start : this.getStartDate()).orElse(null);
+        LocalDate currentDate = !start.isBefore(this.getStartDate()) ? start : this.getStartDate();
 
-        while (nextDate != null && !nextDate.isAfter(end)) {
-            occurrences.add(nextDate); // Add the valid date
-            nextDate = this.getNextTransactionDate(nextDate).orElse(null); // Get the next occurrence
+        if (this.frequency == TransactionFrequency.SPECIFIC_DAYS && !isSpecificDay(currentDate)) {
+            currentDate = getNextTransactionDate(currentDate).orElse(null);
+        }
+
+        while (currentDate != null && !currentDate.isAfter(end)) {
+            if(this.getEndDate() != null && currentDate.isAfter(this.getEndDate())) break;
+            occurrences.add(currentDate);
+            currentDate = this.getNextTransactionDate(currentDate).orElse(null);
         }
         return occurrences;
     }
+
 
 
 }

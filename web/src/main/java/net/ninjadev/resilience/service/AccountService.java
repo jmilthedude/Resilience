@@ -114,7 +114,7 @@ public class AccountService {
                 .mapToDouble(amount -> amount)
                 .sum();
 
-        return account.getBalance() + pendingBalance + recurringTransactionSum;
+        return pendingBalance + recurringTransactionSum;
     }
 
 
