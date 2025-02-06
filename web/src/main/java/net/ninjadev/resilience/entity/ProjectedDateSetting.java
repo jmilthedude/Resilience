@@ -1,9 +1,7 @@
 package net.ninjadev.resilience.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,10 +17,25 @@ public class ProjectedDateSetting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private PreferenceType preferenceType; // "relative", "endOfMonth", or "exact"
+
     private Integer amount; // For relative preferences (e.g., 7, 30 days)
     private DateUnit unit; // For relative preferences (e.g., "days", "weeks")
+
     private LocalDate exactDate; // For specific dates (e.g., "2023-11-01")
+
+    public ProjectedDateSetting(
+            @NotNull PreferenceType preferenceType,
+            Integer amount,
+            DateUnit unit,
+            LocalDate exactDate
+    ) {
+        this.preferenceType = preferenceType;
+        this.amount = amount;
+        this.unit = unit;
+        this.exactDate = exactDate;
+    }
 
     public static ProjectedDateSetting createDefault() {
         ProjectedDateSetting setting = new ProjectedDateSetting();
@@ -31,24 +44,29 @@ public class ProjectedDateSetting {
     }
 
     public LocalDate getProjectedDate() {
-        if (preferenceType == PreferenceType.RELATIVE) {
-            switch (unit) {
-                case DAYS -> {
-                    return LocalDate.now().plusDays(amount);
-                }
-                case WEEKS -> {
-                    return LocalDate.now().plusWeeks(amount);
-                }
-                case MONTHS -> {
-                    return LocalDate.now().plusMonths(amount);
-                }
-            }
-            return LocalDate.now().plusDays(amount);
-        } else if (preferenceType == PreferenceType.END_OF_MONTH) {
-            return LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
-        } else {
-            return exactDate;
+        if (preferenceType == null) {
+            throw new IllegalStateException("Preference type must be set.");
         }
+
+        return switch (preferenceType) {
+            case RELATIVE -> {
+                if (unit == null || amount == null) {
+                    throw new IllegalStateException("Amount and unit must be set for RELATIVE preferences.");
+                }
+                yield switch (unit) {
+                    case DAYS -> LocalDate.now().plusDays(amount);
+                    case WEEKS -> LocalDate.now().plusWeeks(amount);
+                    case MONTHS -> LocalDate.now().plusMonths(amount);
+                };
+            }
+            case END_OF_MONTH -> LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+            case EXACT -> {
+                if (exactDate == null) {
+                    throw new IllegalStateException("Exact date must be set for EXACT preferences.");
+                }
+                yield exactDate;
+            }
+        };
     }
 
     public enum PreferenceType {
