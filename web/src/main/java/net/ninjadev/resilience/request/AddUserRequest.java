@@ -1,6 +1,5 @@
 package net.ninjadev.resilience.request;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,10 +18,4 @@ public class AddUserRequest {
     private String password;
     @NotNull
     private ResilienceUser.Role role;
-
-    public AddUserRequest(@Valid ResilienceUser user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.role = user.getRole();
-    }
 }

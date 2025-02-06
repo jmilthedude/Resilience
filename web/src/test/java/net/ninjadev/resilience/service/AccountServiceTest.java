@@ -1,5 +1,6 @@
 package net.ninjadev.resilience.service;
 
+import net.ninjadev.resilience.config.ResilienceConfiguration;
 import net.ninjadev.resilience.entity.Account;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.entity.transaction.RecurringTransaction;
@@ -38,6 +39,9 @@ class AccountServiceTest {
 
     @Mock
     private ResilienceUserRepository userRepository;
+
+    @Mock
+    private ResilienceConfiguration configuration;
 
     @InjectMocks
     private AccountService accountService;

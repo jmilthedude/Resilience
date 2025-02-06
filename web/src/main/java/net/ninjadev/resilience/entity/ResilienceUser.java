@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.ninjadev.resilience.config.ResilienceConfiguration;
 import net.ninjadev.resilience.request.AddUserRequest;
 
 import java.util.Set;
@@ -37,14 +38,19 @@ public class ResilienceUser {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_settings_id", referencedColumnName = "id")
+    private UserSettings userSettings;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "users")
     private Set<Account> accounts;
 
-    public ResilienceUser(@Valid AddUserRequest userDto) {
-        this.username = userDto.getUsername();
-        this.password = userDto.getPassword();
-        this.role = userDto.getRole();
+    public ResilienceUser(@Valid AddUserRequest user, ResilienceConfiguration configuration) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.userSettings = UserSettings.createDefault(configuration);
     }
 
     public enum Role {

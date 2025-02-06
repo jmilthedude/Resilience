@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class ResilienceConfiguration {
 
     private String applicationName;
-
-    private String[] adminEndpoints;
+    private String defaultAccentColor;
 
 }

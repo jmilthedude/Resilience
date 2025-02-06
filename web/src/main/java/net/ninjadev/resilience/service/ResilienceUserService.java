@@ -2,6 +2,8 @@ package net.ninjadev.resilience.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import net.ninjadev.resilience.config.ResilienceConfiguration;
 import net.ninjadev.resilience.request.AddUserRequest;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
@@ -12,15 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ResilienceUserService {
 
     private final ResilienceUserRepository resilienceUserRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public ResilienceUserService(ResilienceUserRepository resilienceUserRepository, PasswordEncoder passwordEncoder) {
-        this.resilienceUserRepository = resilienceUserRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final ResilienceConfiguration configuration;
 
     public Optional<ResilienceUser> findByUsername(String username) {
         return this.resilienceUserRepository.findByUsername(username);
@@ -46,7 +45,7 @@ public class ResilienceUserService {
     }
 
     public Optional<ResilienceUser> add(@Valid AddUserRequest user) {
-        return this.add(new ResilienceUser(user));
+        return this.add(new ResilienceUser(user, configuration));
     }
 
     @Transactional

@@ -23,5 +23,4 @@ logging:
 
 resilience:
   application-name: Resilience
-  admin-endpoints:
-    - "/users"
+  default-accent-color: "#009688"
