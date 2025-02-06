@@ -76,6 +76,10 @@ public class RecurringTransaction extends Transaction {
         return specificDays.contains(date.getDayOfMonth());
     }
 
+    public boolean shouldProcess() {
+        return LocalDate.now().isAfter(this.getStartDate());
+    }
+
     public List<LocalDate> computeAllOccurrences(LocalDate start, LocalDate end) {
         if(start == null || end == null) {
             throw new IllegalArgumentException("Start and end dates cannot be null");

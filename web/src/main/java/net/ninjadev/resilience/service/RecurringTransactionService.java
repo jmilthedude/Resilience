@@ -24,8 +24,14 @@ public class RecurringTransactionService {
 
     @Transactional
     public void process() {
-        List<RecurringTransaction> recurringTransactions = this.recurringTransactionRepository.findAll();
 
+        List<RecurringTransaction> recurringTransactions = this.recurringTransactionRepository.findAll().stream()
+                .filter(RecurringTransaction::shouldProcess)
+                .toList();
+        log.info(recurringTransactions.isEmpty()
+                ? "No recurring transactions ready for processing."
+                : "Processing recurring transactions."
+        );
         for (RecurringTransaction recurringTransaction : recurringTransactions) {
             this.processRecurringTransaction(recurringTransaction);
         }
@@ -33,10 +39,6 @@ public class RecurringTransactionService {
 
     private void processRecurringTransaction(RecurringTransaction recurringTransaction) {
         try {
-            if (recurringTransaction.getStartDate().isAfter(LocalDate.now())) {
-                return;
-            }
-
             LocalDate lastTransactionDate = recurringTransaction.getStartDate();
             LocalDate today = LocalDate.now();
 
