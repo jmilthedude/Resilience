@@ -22,15 +22,25 @@ public class UserSettingsController {
     public ResponseEntity<UserSettings> getUserSettings(Authentication authentication) {
         return userSettingsService.getUserSettings(authentication.getName())
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> {
-                    log.warn("User settings not found for username: {}", authentication.getName());
-                    return ResponseEntity.notFound().build();
-                });
+                .orElseGet(() -> getNotFoundResponseForUserSettings(authentication.getName()));
+    }
+
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserSettings> getUserSettingsByUsername(@PathVariable String username) {
+        return userSettingsService.getUserSettings(username)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> getNotFoundResponseForUserSettings(username));
     }
 
     @PatchMapping
     public ResponseEntity<UserSettings> updateUserSettings(Authentication authentication, @RequestBody UserSettingsRequest request) {
         userSettingsService.patchSettings(request, authentication.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity<UserSettings> getNotFoundResponseForUserSettings(String authentication) {
+        log.warn("User settings not found for username: {}", authentication);
+        return ResponseEntity.notFound().build();
     }
 }

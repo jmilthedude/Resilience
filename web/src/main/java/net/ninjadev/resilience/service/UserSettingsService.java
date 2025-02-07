@@ -24,9 +24,18 @@ public class UserSettingsService {
     private final ResilienceConfiguration configuration;
 
     public Optional<UserSettings> getUserSettings(String username) {
-        return this.resilienceUserRepository.findByUsername(username)
-                .map(ResilienceUser::getUserSettings)
-                .or(() -> Optional.of(UserSettings.createDefault(configuration)));
+        Optional<ResilienceUser> optionalUser = this.resilienceUserRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        ResilienceUser user = optionalUser.get();
+        UserSettings userSettings = user.getUserSettings();
+        if (userSettings == null) {
+            userSettings = UserSettings.createDefault(configuration);
+            user.setUserSettings(userSettings);
+        }
+        this.resilienceUserRepository.save(user);
+        return Optional.of(userSettings);
     }
 
     @Transactional

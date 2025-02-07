@@ -18,6 +18,7 @@ public class ProjectedDateSetting {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PreferenceType preferenceType; // "relative", "endOfMonth", or "exact"
 
     private Integer amount; // For relative preferences (e.g., 7, 30 days)
