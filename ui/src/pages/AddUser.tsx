@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, {ChangeEvent, FormEvent, useState} from "react";
 import { Button, Container, Input, Title } from "@mantine/core";
 
 const API_URL = "http://localhost:8081/api/v1/users";
 
-const AddUserPage = () => {
-    const [formData, setFormData] = useState({ username: "", password: "" });
+type FormData = {
+    username: string;
+    password: string;
+}
 
-    const handleChange = ({ target: { name, value } }) => {
+const AddUserPage = () => {
+    const [formData, setFormData] = useState<FormData>({ username: "", password: "" });
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleErrorResponse = async (response) => {
+
+    const handleErrorResponse = async (response: Response): Promise<string> => {
         const textResponse = await response.text();
         try {
             const errorResponse = JSON.parse(textResponse);
@@ -22,7 +29,7 @@ const AddUserPage = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
