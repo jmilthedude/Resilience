@@ -42,6 +42,7 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
             });
 
             if (response.ok) {
+                onSuccess && onSuccess(userData);
                 alert("User added successfully!");
                 setUserData({id: "", name: "", username: "", password: "", role: "USER"});
             } else {

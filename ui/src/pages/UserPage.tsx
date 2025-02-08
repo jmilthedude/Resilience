@@ -20,7 +20,7 @@ const UserPage = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch("http://192.168.86.69:8081/api/v1/users", {
+                const response = await fetch("http://localhost:8081/api/v1/users", {
                     credentials: "include",
                 });
 
