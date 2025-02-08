@@ -50,6 +50,7 @@ public class ResilienceUser {
     private Set<Account> accounts;
 
     public ResilienceUser(@Valid AddUserRequest user, ResilienceConfiguration configuration) {
+        this.name = user.getName();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.role = user.getRole();

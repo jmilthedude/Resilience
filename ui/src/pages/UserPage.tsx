@@ -50,14 +50,30 @@ const UserPage = () => {
         setSelectedUser(null);
     };
 
-    const handleDeleteClick = (id: string) => {
-        setUserToDelete(id);
+    const handleDeleteClick = (username: string) => {
+        setUserToDelete(username);
         setConfirmDeleteModal(true);
     };
 
-    const deleteUser = (id: string) => {
-        setUsers((prev) => prev.filter((user) => user.id !== id));
-        setConfirmDeleteModal(false);
+    const deleteUser = async (username: string) => {
+        try {
+            const response = await fetch(`http://localhost:8081/api/v1/users/${username}`, {
+                method: "DELETE",
+                credentials: "include", // Includes credentials with the request
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete user");
+            }
+
+            // Update the UI state only if the deletion is successful
+            setUsers((prev) => prev.filter((user) => user.username !== username));
+            setConfirmDeleteModal(false);
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("An error occurred while trying to delete the user.");
+        }
+
     };
 
     // Render Functions
@@ -67,7 +83,7 @@ const UserPage = () => {
                 <ActionIcon
                     color="red"
                     style={{position: "absolute", top: "16px", right: "16px"}}
-                    onClick={() => handleDeleteClick(user.id)}
+                    onClick={() => handleDeleteClick(user.username)}
                 >X</ActionIcon>
                 <Group>
                     <div>
@@ -112,7 +128,6 @@ const UserPage = () => {
             <Modal
                 opened={isAddModalOpen}
                 onClose={() => setAddModalOpen(false)}
-                title="Add a New User"
             >
                 <AddUserForm onSuccess={handleAddUser}/>
             </Modal>
@@ -124,9 +139,7 @@ const UserPage = () => {
                     onClose={() => {
                         setEditModalOpen(false);
                         setSelectedUser(null);
-                    }}
-                    title={`Edit User: ${selectedUser.name}`}
-                >
+                    }}                >
                     <EditUserForm user={selectedUser} onSuccess={handleEditUser}/>
                 </Modal>
             )}
@@ -139,16 +152,10 @@ const UserPage = () => {
             >
                 <Text>Are you sure you want to delete this user?</Text>
                 <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
-                    <Button
-                        onClick={() => setConfirmDeleteModal(false)}
-                        style={{marginRight: 8}}
-                    >
+                    <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>
                         Cancel
                     </Button>
-                    <Button
-                        color="red"
-                        onClick={() => userToDelete && deleteUser(userToDelete)}
-                    >
+                    <Button color="red" onClick={() => userToDelete && deleteUser(userToDelete)}>
                         Delete
                     </Button>
                 </div>

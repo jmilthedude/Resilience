@@ -43,7 +43,7 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
 
             if (response.ok) {
                 alert("User added successfully!");
-                setFormData({id: "", name: "", role: "User", username: "", password: ""});
+                setFormData({id: "", name: "", role: "USER", username: "", password: ""});
             } else {
                 alert(await handleErrorResponse(response));
             }

@@ -4,21 +4,16 @@ import {User} from "../types/user";
 
 const API_URL = "http://localhost:8081/api/v1/users";
 
-type FormData = {
-    username: string;
-    password: string;
-}
-
 interface AddUserFormProps {
     onSuccess?: (newUser: User) => void
 }
 
 const AddUserPage = ({onSuccess}: AddUserFormProps) => {
-    const [formData, setFormData] = useState<FormData>({username: "", password: ""});
+    const [userData, setUserData] = useState<User>({id: "", name: "", username: "", password: "", role: "USER"});
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
+        setUserData((prev) => ({...prev, [name]: value}));
     };
 
 
@@ -38,16 +33,17 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
         e.preventDefault();
 
         try {
+            console.log(userData);
             const response = await fetch(API_URL, {
                 method: "POST",
                 credentials: "include",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({...formData, role: "USER"}),
+                body: JSON.stringify({...userData}),
             });
 
             if (response.ok) {
                 alert("User added successfully!");
-                setFormData({username: "", password: ""});
+                setUserData({id: "", name: "", username: "", password: "", role: "USER"});
             } else {
                 alert(await handleErrorResponse(response));
             }
@@ -57,18 +53,28 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
     };
 
     return (
-        <Container size="md" style={{maxWidth: 400, margin: "50px auto", textAlign: "center"}}>
+        <Container size="md" style={{maxWidth: 400, margin: "auto", textAlign: "center"}}>
             <Title order={2} mb="lg">
                 Add User
             </Title>
             <form onSubmit={handleSubmit}>
+                <Input
+                    name="name"
+                    radius="lg"
+                    mb="sm"
+                    type="text"
+                    placeholder="Name"
+                    value={userData.name}
+                    onChange={handleChange}
+                    required
+                />
                 <Input
                     name="username"
                     radius="lg"
                     mb="sm"
                     type="text"
                     placeholder="Username"
-                    value={formData.username}
+                    value={userData.username}
                     onChange={handleChange}
                     required
                 />
@@ -78,7 +84,7 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
                     mb="sm"
                     type="password"
                     placeholder="Password"
-                    value={formData.password}
+                    value={userData.password}
                     onChange={handleChange}
                     required
                 />
