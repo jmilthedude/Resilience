@@ -10,12 +10,14 @@ import net.ninjadev.resilience.entity.ResilienceUser;
 @AllArgsConstructor
 public class ResilienceUserResponse {
     private long id;
+    private String username;
     private String name;
     private ResilienceUser.Role role;
 
     public ResilienceUserResponse(ResilienceUser user) {
         this.id = user.getId();
-        this.name = user.getUsername();
+        this.username = user.getUsername();
+        this.name = user.getName();
         this.role = user.getRole();
     }
 }

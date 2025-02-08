@@ -1,19 +1,20 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import { Button, Container, Input, Title } from "@mantine/core";
+import {Button, Container, Input, Title} from "@mantine/core";
+import {User} from "../types/user";
 
 const API_URL = "http://localhost:8081/api/v1/users";
 
-type FormData = {
-    username: string;
-    password: string;
+interface EditUserFormProps {
+    user: User,
+    onSuccess?: (updatedUser: User) => void
 }
 
-const AddUserPage = () => {
-    const [formData, setFormData] = useState<FormData>({ username: "", password: "" });
+const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
+    const [formData, setFormData] = useState<User>(user);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setFormData((prev) => ({...prev, [name]: value}));
     };
 
 
@@ -36,13 +37,13 @@ const AddUserPage = () => {
             const response = await fetch(API_URL, {
                 method: "POST",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...formData, role: "USER" }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({...formData, role: "USER"}),
             });
 
             if (response.ok) {
                 alert("User added successfully!");
-                setFormData({ username: "", password: "" });
+                setFormData({id: "", name: "", role: "User", username: "", password: ""});
             } else {
                 alert(await handleErrorResponse(response));
             }
@@ -52,7 +53,7 @@ const AddUserPage = () => {
     };
 
     return (
-        <Container size="md" style={{ maxWidth: 400, margin: "50px auto", textAlign: "center" }}>
+        <Container size="md" style={{maxWidth: 400, margin: "50px auto", textAlign: "center"}}>
             <Title order={2} mb="lg">
                 Add User
             </Title>
@@ -85,4 +86,4 @@ const AddUserPage = () => {
     );
 };
 
-export default AddUserPage;
+export default EditUserPage;

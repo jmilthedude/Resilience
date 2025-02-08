@@ -1,15 +1,17 @@
 import React from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
-import LoginPage from "./pages/UserLogin";
-import AddUserPage from "./pages/AddUser";
+import UserLoginForm from "./form/UserLoginForm";
+import AddUserForm from "./form/AddUserForm";
+import UserPage from "./pages/UserPage";
 
 const App = () => {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to="/login"/>}/>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/users/add" element={<AddUserPage/>}/>
+                <Route path="/login" element={<UserLoginForm/>}/>
+                <Route path="/users/add" element={<AddUserForm/>}/>
+                <Route path="/users" element={<UserPage/>}/>
             </Routes>
         </Router>
     )

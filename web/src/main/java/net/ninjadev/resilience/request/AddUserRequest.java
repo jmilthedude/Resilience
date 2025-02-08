@@ -14,6 +14,8 @@ import net.ninjadev.resilience.entity.ResilienceUser;
 public class AddUserRequest {
     @NotEmpty
     private String username;
+    @NotEmpty
+    private String name;
     @Size(min = 8, max = 20)
     private String password;
     @NotNull
