@@ -4,6 +4,7 @@ import AddUserForm from "../form/AddUserForm";
 import EditUserForm from "../form/EditUserForm";
 import {User} from "../types/user";
 import styles from "./UserPage.module.css";
+import UserService from '../api/services/UserService';
 
 const UserPage = () => {
     // State Management
@@ -18,23 +19,12 @@ const UserPage = () => {
 
     // Fetch Users
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await fetch("http://localhost:8081/api/v1/users", {
-                    credentials: "include",
-                });
-
-                if (!response.ok) throw new Error("Failed to fetch users");
-
-                const data: User[] = await response.json();
-                setUsers(data);
-            } catch (err: any) {
-                setError(err.message || "An error occurred while fetching users");
-            } finally {
-                setLoading(false);
-            }
+        const fetchUsers = () => {
+            UserService.listUsers()
+                .then((data: User[]) => setUsers(data))
+                .catch((err) => setError(err.message || "An error occurred while fetching users"))
+                .finally(() => setLoading(false));
         };
-
         fetchUsers();
     }, []);
 
@@ -56,24 +46,10 @@ const UserPage = () => {
     };
 
     const deleteUser = async (username: string) => {
-        try {
-            const response = await fetch(`http://localhost:8081/api/v1/users/${username}`, {
-                method: "DELETE",
-                credentials: "include", // Includes credentials with the request
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete user");
-            }
-
-            // Update the UI state only if the deletion is successful
-            setUsers((prev) => prev.filter((user) => user.username !== username));
-            setConfirmDeleteModal(false);
-        } catch (error) {
-            console.error("Error deleting user:", error);
-            alert("An error occurred while trying to delete the user.");
-        }
-
+        UserService.deleteUser(username)
+            .then(() => setUsers((prev) => prev.filter((user) => user.username !== username)))
+            .catch((err) => alert(err.message || "An error occurred while trying to delete the user."))
+            .finally(() => setConfirmDeleteModal(false));
     };
 
     // Render Functions
@@ -134,22 +110,16 @@ const UserPage = () => {
 
             {/* Edit User Modal */}
             {selectedUser && (
-                <Modal
-                    opened={isEditModalOpen}
-                    onClose={() => {
-                        setEditModalOpen(false);
-                        setSelectedUser(null);
-                    }}                >
+                <Modal opened={isEditModalOpen} onClose={() => {
+                    setEditModalOpen(false);
+                    setSelectedUser(null);
+                }}>
                     <EditUserForm user={selectedUser} onSuccess={handleEditUser}/>
                 </Modal>
             )}
 
             {/* Delete Confirmation Modal */}
-            <Modal
-                opened={confirmDeleteModal}
-                onClose={() => setConfirmDeleteModal(false)}
-                title="Confirm Deletion"
-            >
+            <Modal opened={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)} title="Confirm Deletion">
                 <Text>Are you sure you want to delete this user?</Text>
                 <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
                     <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>

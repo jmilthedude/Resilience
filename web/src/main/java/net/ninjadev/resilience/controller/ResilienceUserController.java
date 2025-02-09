@@ -35,6 +35,14 @@ public class ResilienceUserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<ResilienceUserResponse> getCurrentUser(Authentication authentication) {
+        String username = authentication.getName();
+        return this.resilienceUserService.findByUsername(username)
+                .map(user -> ResponseEntity.ok(new ResilienceUserResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ResilienceUserResponse>> listUsers() {

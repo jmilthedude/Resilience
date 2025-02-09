@@ -1,8 +1,7 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {Button, Container, Input, Title} from "@mantine/core";
 import {User} from "../types/user";
-
-const API_URL = "http://localhost:8081/api/v1/users";
+import UserService from '../api/services/UserService';
 
 interface AddUserFormProps {
     onSuccess?: (newUser: User) => void
@@ -16,41 +15,16 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
         setUserData((prev) => ({...prev, [name]: value}));
     };
 
-
-    const handleErrorResponse = async (response: Response): Promise<string> => {
-        const textResponse = await response.text();
-        try {
-            const errorResponse = JSON.parse(textResponse);
-            return errorResponse.errors?.[0]
-                ? `Invalid ${errorResponse.errors[0].field}: ${errorResponse.errors[0].defaultMessage}`
-                : errorResponse.message || "An unknown error occurred.";
-        } catch {
-            return textResponse || "An unknown error occurred.";
-        }
-    };
-
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        try {
-            console.log(userData);
-            const response = await fetch(API_URL, {
-                method: "POST",
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({...userData}),
-            });
-
-            if (response.ok) {
-                onSuccess && onSuccess(userData);
+        UserService.addUser(userData)
+            .catch(error => {alert(error.message)})
+            .then(() => {onSuccess && onSuccess(userData)})
+            .finally(() => {
+                setUserData({id: "", name: "", username: "", password: "", role: "USER"})
                 alert("User added successfully!");
-                setUserData({id: "", name: "", username: "", password: "", role: "USER"});
-            } else {
-                alert(await handleErrorResponse(response));
-            }
-        } catch (error) {
-            alert("Failed to connect to the server.");
-        }
+            });
     };
 
     return (
@@ -59,7 +33,7 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
                 Add User
             </Title>
             <form onSubmit={handleSubmit}>
-                <Input
+                <Input autoComplete="new-name"
                     name="name"
                     radius="lg"
                     mb="sm"
@@ -69,7 +43,7 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
                     onChange={handleChange}
                     required
                 />
-                <Input
+                <Input autoComplete="new-username"
                     name="username"
                     radius="lg"
                     mb="sm"
@@ -79,7 +53,7 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
                     onChange={handleChange}
                     required
                 />
-                <Input
+                <Input autoComplete="new-password"
                     name="password"
                     radius="lg"
                     mb="sm"
