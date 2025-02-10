@@ -1,6 +1,6 @@
 import React from "react";
 import {Outlet} from "react-router-dom"; // To render child routes
-import {AppShell, Burger, Text} from "@mantine/core";
+import {AppShell, Burger} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {useAuth} from "./auth/AuthProvider";
 
@@ -16,25 +16,39 @@ const Layout = () => {
         <AppShell
             padding="md"
             navbar={{
-                width: 300,
+                width: opened ? 300 : 0,
                 breakpoint: 'sm',
                 collapsed: {mobile: !opened},
             }}
         >
-            <AppShell.Navbar p={"md"}>
-                <Text>Dashboard</Text>
-                <Text>Users</Text>
-                <Text>Settings</Text>
-                <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                />
+            <Burger
+                style={{
+                    position: "absolute",
+                    left: 20,
+                    top: 20,
+                }}
+                opened={opened}
+                onClick={toggle}
+                size="sm"
+            />
+            <AppShell.Navbar p={opened ? "md" : 0} style={{
+                transition: "width 0.3s",
+                overflow: "hidden",
+            }}>
+                <div style={{display: "flex", alignItems: "flex-start", justifyContent: "space-between"}}>
+                    <h1 style={{margin: 0, visibility: opened ? "visible" : "hidden"}}>Resilience</h1>
+                    <Burger
+                        style={{
+                            visibility: opened ? "visible" : "hidden",
+                            alignSelf: "right"
+                        }}
+                        opened={opened}
+                        onClick={toggle}
+                        size="sm"
+                    />
+                </div>
             </AppShell.Navbar>
-
-            <Outlet/>
-
+            <AppShell.Main><Outlet/></AppShell.Main>
         </AppShell>
     );
 };

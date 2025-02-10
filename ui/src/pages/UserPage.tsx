@@ -5,6 +5,7 @@ import EditUserForm from "../form/EditUserForm";
 import {User} from "../types/user";
 import styles from "./UserPage.module.css";
 import UserService from '../api/services/UserService';
+import AddUserButton from "../components/AddUserButton";
 
 const UserPage = () => {
     // State Management
@@ -89,48 +90,51 @@ const UserPage = () => {
 
     // Main Return
     return (
-        <div style={{maxWidth: 600, margin: "auto"}}>
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
             <div className={styles.header}>
                 <h1>User Management</h1>
-                <Button onClick={() => setAddModalOpen(true)} color="teal">
-                    Add User
-                </Button>
+            </div>
+            <AddUserButton setAddModalOpen={setAddModalOpen}/>
+            <div style={{maxWidth: 768}}>
+                <SimpleGrid style={{marginLeft: "10px", marginRight: "10px"}} cols={{sm: 1, lg: 2}}
+                            spacing="sm">{renderUserCards()}</SimpleGrid>
+
+                {/* Add User Modal */}
+                <Modal
+                    opened={isAddModalOpen}
+                    onClose={() => setAddModalOpen(false)}
+                >
+                    <AddUserForm onSuccess={handleAddUser}/>
+                </Modal>
+
+                {/* Edit User Modal */}
+                {selectedUser && (
+                    <Modal opened={isEditModalOpen} onClose={() => {
+                        setEditModalOpen(false);
+                        setSelectedUser(null);
+                    }}>
+                        <EditUserForm user={selectedUser} onSuccess={handleEditUser}/>
+                    </Modal>
+                )}
+
+                {/* Delete Confirmation Modal */}
+                <Modal opened={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)}
+                       title="Confirm Deletion">
+                    <Text>Are you sure you want to delete this user?</Text>
+                    <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
+                        <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>
+                            Cancel
+                        </Button>
+                        <Button color="red" onClick={() => userToDelete && deleteUser(userToDelete)}>
+                            Delete
+                        </Button>
+                    </div>
+                </Modal>
             </div>
 
-            <SimpleGrid style={{marginLeft: "10px", marginRight: "10px"}} cols={{sm: 1, lg: 2}}
-                        spacing="sm">{renderUserCards()}</SimpleGrid>
 
-            {/* Add User Modal */}
-            <Modal
-                opened={isAddModalOpen}
-                onClose={() => setAddModalOpen(false)}
-            >
-                <AddUserForm onSuccess={handleAddUser}/>
-            </Modal>
-
-            {/* Edit User Modal */}
-            {selectedUser && (
-                <Modal opened={isEditModalOpen} onClose={() => {
-                    setEditModalOpen(false);
-                    setSelectedUser(null);
-                }}>
-                    <EditUserForm user={selectedUser} onSuccess={handleEditUser}/>
-                </Modal>
-            )}
-
-            {/* Delete Confirmation Modal */}
-            <Modal opened={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)} title="Confirm Deletion">
-                <Text>Are you sure you want to delete this user?</Text>
-                <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
-                    <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>
-                        Cancel
-                    </Button>
-                    <Button color="red" onClick={() => userToDelete && deleteUser(userToDelete)}>
-                        Delete
-                    </Button>
-                </div>
-            </Modal>
         </div>
+
     );
 };
 

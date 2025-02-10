@@ -2,10 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 10px;
+    margin: 5px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .header {
         flex-direction: column;
         align-items: flex-start;
@@ -14,5 +14,6 @@
 
 .card {
     position: relative;
+    width: 284px;
 }
 
