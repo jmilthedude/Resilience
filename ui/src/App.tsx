@@ -8,8 +8,6 @@ import PrivateRoute from "./auth/PrivateRoute";
 import {AuthProvider} from "./auth/AuthProvider";
 
 const App = () => {
-    console.log("App rendered!");
-
     return (
         <AuthProvider>
             <Router>
@@ -30,6 +28,5 @@ const App = () => {
         </AuthProvider>
     )
 };
-
 
 export default App;

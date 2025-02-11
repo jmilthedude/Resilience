@@ -15,6 +15,8 @@ const Layout = () => {
     return (
         <AppShell
             padding="md"
+            transitionDuration={500}
+            transitionTimingFunction="ease"
             navbar={{
                 width: opened ? 300 : 0,
                 breakpoint: 'sm',

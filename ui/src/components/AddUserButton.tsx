@@ -17,6 +17,7 @@ const AddUserButton = ({ setAddModalOpen }: { setAddModalOpen: (open: boolean) =
                 borderRadius: isMobile ? "50%" : "5px", // Make it round on mobile
                 padding: isMobile ? 0 : "10px 16px", // Remove padding for the + icon
                 fontSize: isMobile ? "25px" : "inherit", // Larger font size for the + icon
+
             }}
             color="teal"
             onClick={() => setAddModalOpen(true)}

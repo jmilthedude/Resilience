@@ -6,6 +6,7 @@ import {User} from "../types/user";
 import styles from "./UserPage.module.css";
 import UserService from '../api/services/UserService';
 import AddUserButton from "../components/AddUserButton";
+import {FiX} from "react-icons/fi";
 
 const UserPage = () => {
     // State Management
@@ -57,16 +58,16 @@ const UserPage = () => {
     const renderUserCards = () =>
         users.map((user) => (
             <Card key={user.id} shadow="sm" padding="lg" className={styles.card}>
-                <ActionIcon
-                    color="red"
-                    style={{position: "absolute", top: "16px", right: "16px"}}
-                    onClick={() => handleDeleteClick(user.username)}
-                >X</ActionIcon>
+                <ActionIcon color="red"
+                            style={{position: "absolute", top: "16px", right: "16px"}}
+                            onClick={() => handleDeleteClick(user.username)}>
+                    <FiX/>
+                </ActionIcon>
                 <Group>
                     <div>
                         <Text fw={600} size="md">{user.name}</Text>
-                        <Text size="md" c="dimmed">{user.username}</Text>
-                        <Text size="xs" c="dimmed">{user.role}</Text>
+                        <Text size="md" c="dimmed">Username: {user.username}</Text>
+                        <Text size="md" c="dimmed">Role: {user.role}</Text>
                     </div>
                 </Group>
                 <Button
@@ -90,20 +91,16 @@ const UserPage = () => {
 
     // Main Return
     return (
-        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <div style={{margin: "0 auto", maxWidth: 800}}>
             <div className={styles.header}>
                 <h1>User Management</h1>
             </div>
             <AddUserButton setAddModalOpen={setAddModalOpen}/>
-            <div style={{maxWidth: 768}}>
-                <SimpleGrid style={{marginLeft: "10px", marginRight: "10px"}} cols={{sm: 1, lg: 2}}
-                            spacing="sm">{renderUserCards()}</SimpleGrid>
+            <div className={styles.scrollableContainer}>
+                <SimpleGrid cols={{sm: 1, lg: 2}} spacing="sm">{renderUserCards()}</SimpleGrid>
 
                 {/* Add User Modal */}
-                <Modal
-                    opened={isAddModalOpen}
-                    onClose={() => setAddModalOpen(false)}
-                >
+                <Modal opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
                     <AddUserForm onSuccess={handleAddUser}/>
                 </Modal>
 
@@ -122,12 +119,8 @@ const UserPage = () => {
                        title="Confirm Deletion">
                     <Text>Are you sure you want to delete this user?</Text>
                     <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
-                        <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>
-                            Cancel
-                        </Button>
-                        <Button color="red" onClick={() => userToDelete && deleteUser(userToDelete)}>
-                            Delete
-                        </Button>
+                        <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>Cancel</Button>
+                        <Button color="red" onClick={() => userToDelete && deleteUser(userToDelete)}>Delete</Button>
                     </div>
                 </Modal>
             </div>
