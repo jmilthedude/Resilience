@@ -1,4 +1,4 @@
-import React, {FormEvent, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Container, Input} from "@mantine/core";
 import useApi from "../api/axiosInstance";
@@ -7,12 +7,14 @@ import {useAuth} from "../auth/AuthProvider";
 
 const LoginPage = () => {
 
-    const { isLoggedIn, login } = useAuth();
+    const {isLoggedIn, login} = useAuth();
     const navigate = useNavigate();
 
-    if (isLoggedIn) {
-        navigate("/users");
-    }
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/users");
+        }
+    }, [isLoggedIn, navigate]);
 
     const api = useApi();
     const [username, setUsername] = useState("");

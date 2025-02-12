@@ -24,8 +24,12 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
                 onSuccess && onSuccess(userData)
             })
             .catch(error => {
-                if (error.response && error.response.data && error.response.data.message) {
-                    alert(error.response.data.message);
+                let data = error.response.data;
+                if (data && data.message && data.details) {
+                    const errorMessage = data.message || "An error occurred.";
+                    const errorDetails = data.details ? data.details.join("\n") : "";
+
+                    alert(`${errorMessage}\n${errorDetails}`);
                 } else {
                     alert("An unexpected error occurred. Please try again.");
                 }
@@ -39,7 +43,7 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
     return (
         <Container size="md" style={{maxWidth: 400, margin: "50px auto", textAlign: "center"}}>
             <Title order={2} mb="lg">
-                Add User
+                Edit User
             </Title>
             <form onSubmit={handleSubmit}>
                 <Input
@@ -70,7 +74,6 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
                     placeholder="Password"
                     value={userData.password}
                     onChange={handleChange}
-                    required
                 />
                 <Button variant="filled" fullWidth color="teal" radius="lg" type="submit">
                     Submit

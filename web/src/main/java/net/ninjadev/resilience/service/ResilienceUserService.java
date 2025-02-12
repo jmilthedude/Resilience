@@ -78,7 +78,9 @@ public class ResilienceUserService {
         existingUser.ifPresent(u -> {
             u.setName(user.getName());
             u.setUsername(user.getUsername());
-            u.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            if(user.getPassword() != null) {
+                u.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            }
             u.setRole(user.getRole());
             this.resilienceUserRepository.save(u);
         });

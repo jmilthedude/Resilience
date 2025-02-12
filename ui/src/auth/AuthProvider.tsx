@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import authService from "./AuthService";
 
 type AuthContextType = {
@@ -16,22 +16,23 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
-    const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(() => {
-        return localStorage.getItem("isLoggedIn") === "true";
-    });
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const checkAuthStatus = async (): Promise<boolean> => {
-        const response = await authService.checkAuthStatus();
-        return response.isAuthenticated;
+        return await authService.checkAuthStatus();
     };
 
     useEffect(() => {
         checkAuthStatus()
             .then((isLoggedIn) => {
-                if (isLoggedIn) {
-                    login();
-                }
-            });
+                setIsLoggedIn(isLoggedIn);
+                localStorage.setItem("isLoggedIn", isLoggedIn?.toString());
+            })
+            .catch((error) => {
+                console.error("Error checking auth status:", error);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const login = () => {
@@ -44,6 +45,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}
         localStorage.removeItem("isLoggedIn");
     };
 
+    if (loading) {
+        return null;
+    }
 
     return (
         <AuthContext.Provider value={{isLoggedIn, login, logout}}>

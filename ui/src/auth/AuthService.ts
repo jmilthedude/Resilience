@@ -16,7 +16,7 @@ class AuthService {
         await this.api.post(`${this.baseUrl}/logout`, {});
     }
 
-    public async checkAuthStatus(): Promise<AuthStatusResponse> {
+    public async checkAuthStatus(): Promise<boolean> {
         const response = await this.api.get(`${this.baseUrl}/status`);
         return response.data;
     }
