@@ -42,16 +42,19 @@ const UserPage = () => {
         setSelectedUser(null);
     };
 
-    const handleDeleteClick = (username: string) => {
-        setUserToDelete(username);
+    const handleDeleteClick = (userId: string) => {
+        setUserToDelete(userId);
         setConfirmDeleteModal(true);
     };
 
-    const deleteUser = async (username: string) => {
-        UserService.deleteUser(username)
-            .then(() => setUsers((prev) => prev.filter((user) => user.username !== username)))
+    const deleteUser = async (userId: string) => {
+        UserService.deleteUser(userId)
+            .then(() => setUsers((prev) => prev.filter((user) => user.id !== userId)))
             .catch((err) => alert(err.message || "An error occurred while trying to delete the user."))
-            .finally(() => setConfirmDeleteModal(false));
+            .finally(() => {
+                setConfirmDeleteModal(false);
+                alert("User deleted successfully!");
+            });
     };
 
     // Render Functions
@@ -60,7 +63,7 @@ const UserPage = () => {
             <Card key={user.id} shadow="sm" padding="lg" className={styles.card}>
                 <ActionIcon color="red"
                             style={{position: "absolute", top: "16px", right: "16px"}}
-                            onClick={() => handleDeleteClick(user.username)}>
+                            onClick={() => handleDeleteClick(user.id)}>
                     <FiX/>
                 </ActionIcon>
                 <Group>

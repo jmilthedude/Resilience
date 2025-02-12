@@ -26,14 +26,7 @@ class Api {
             (response: AxiosResponse) => response,
             (error: AxiosError<ApiErrorResponse>) => {
                 if (error.response) {
-                    const apiError = error.response.data as ApiErrorResponse;
-                    const errorMessage =
-                        apiError.message || `An error occurred with status code ${error.response.status}`;
-
-                    console.error(
-                        `Server Error [${error.response.status}]: ${errorMessage}`
-                    );
-                    return Promise.reject(new Error(errorMessage));
+                    return Promise.reject(error);
                 } else if (error.request) {
                     console.error('Network Error:', error.message);
                     return Promise.reject(new Error('No response from the server.'));
@@ -61,7 +54,6 @@ class Api {
         try {
             return await this.api.post(url, data);
         } catch (error) {
-            console.error(`Error while making POST request to ${url}:`, error);
             throw error;
         }
     };

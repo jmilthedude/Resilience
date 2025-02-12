@@ -1,8 +1,7 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {Button, Container, Input, Title} from "@mantine/core";
 import {User} from "../types/user";
-
-const API_URL = "http://localhost:8081/api/v1/users";
+import UserService from '../api/services/UserService';
 
 interface EditUserFormProps {
     user: User,
@@ -10,46 +9,31 @@ interface EditUserFormProps {
 }
 
 const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
-    const [formData, setFormData] = useState<User>(user);
+    const [userData, setUserData] = useState<User>(user);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
-    };
-
-
-    const handleErrorResponse = async (response: Response): Promise<string> => {
-        const textResponse = await response.text();
-        try {
-            const errorResponse = JSON.parse(textResponse);
-            return errorResponse.errors?.[0]
-                ? `Invalid ${errorResponse.errors[0].field}: ${errorResponse.errors[0].defaultMessage}`
-                : errorResponse.message || "An unknown error occurred.";
-        } catch {
-            return textResponse || "An unknown error occurred.";
-        }
+        setUserData((prev) => ({...prev, [name]: value}));
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({...formData, role: "USER"}),
+        UserService.updateUser(userData.id, userData)
+            .then(() => {
+                onSuccess && onSuccess(userData)
+            })
+            .catch(error => {
+                if (error.response && error.response.data && error.response.data.message) {
+                    alert(error.response.data.message);
+                } else {
+                    alert("An unexpected error occurred. Please try again.");
+                }
+            })
+            .finally(() => {
+                setUserData({id: "", name: "", username: "", password: "", role: "USER"})
+                alert("User updated successfully!");
             });
-
-            if (response.ok) {
-                alert("User added successfully!");
-                setFormData({id: "", name: "", role: "USER", username: "", password: ""});
-            } else {
-                alert(await handleErrorResponse(response));
-            }
-        } catch (error) {
-            alert("Failed to connect to the server.");
-        }
     };
 
     return (
@@ -59,12 +43,22 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
             </Title>
             <form onSubmit={handleSubmit}>
                 <Input
+                    name="name"
+                    radius="lg"
+                    mb="sm"
+                    type="text"
+                    placeholder="Name"
+                    value={userData.name}
+                    onChange={handleChange}
+                    required
+                />
+                <Input
                     name="username"
                     radius="lg"
                     mb="sm"
                     type="text"
                     placeholder="Username"
-                    value={formData.username}
+                    value={userData.username}
                     onChange={handleChange}
                     required
                 />
@@ -74,7 +68,7 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
                     mb="sm"
                     type="password"
                     placeholder="Password"
-                    value={formData.password}
+                    value={userData.password}
                     onChange={handleChange}
                     required
                 />

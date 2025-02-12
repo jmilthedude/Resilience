@@ -16,54 +16,36 @@ class UserService {
     private readonly api = useApi();
     private readonly baseUrl: string = '/users';
 
-    /**
-     * Get a list of all users.
-     */
     public async listUsers(): Promise<User[]> {
         const response: AxiosResponse<User[]> = await this.api.get(this.baseUrl);
         return response.data;
     }
 
-    /**
-     * Fetch a specific user by username.
-     * @param username Target user's username
-     */
-    public async getUser(username: string): Promise<User> {
-        const response: AxiosResponse<User> = await this.api.get(`${this.baseUrl}/${username}`);
+    public async getUser(userId: bigint): Promise<User> {
+        const response: AxiosResponse<User> = await this.api.get(`${this.baseUrl}/${userId}`);
         return response.data;
     }
 
-    /**
-     * Fetch the currently authenticated user.
-     */
     public async getCurrentUser(): Promise<User> {
         const response: AxiosResponse<User> = await this.api.get(`${this.baseUrl}/me`);
         return response.data;
     }
 
-    /**
-     * Add a new user.
-     * @param userData Object containing new user data
-     */
     public async addUser(userData: User): Promise<User> {
         const response: AxiosResponse<User> = await this.api.post(this.baseUrl, userData);
         return response.data;
     }
 
-    /**
-     * Update a user's password.
-     * @param username Target username
-     * @param passwordData Object containing current and new password
-     */
+    public async updateUser(userId: string, userData: User): Promise<User> {
+        const response: AxiosResponse<User> = await this.api.patch(`${this.baseUrl}/${userId}`, userData);
+        return response.data;
+    }
+
     public async updateUserPassword(username: string, passwordData: UpdatePasswordRequest): Promise<UserServiceResponse> {
         const response: AxiosResponse<UserServiceResponse> = await this.api.patch(`${this.baseUrl}/${username}/password`, passwordData);
         return response.data;
     }
 
-    /**
-     * Update a user's password.
-     * @param passwordData Object containing current and new password
-     */
     public async updateCurrentUserPassword(passwordData: UpdatePasswordRequest): Promise<UserServiceResponse> {
         const currentUser = await this.getCurrentUser();
         const username = currentUser.username;
@@ -71,12 +53,8 @@ class UserService {
         return response.data;
     }
 
-    /**
-     * Delete a user by username.
-     * @param username Target user's username
-     */
-    public async deleteUser(username: string): Promise<UserServiceResponse> {
-        const response: AxiosResponse<UserServiceResponse> = await this.api.del(`${this.baseUrl}/${username}`);
+    public async deleteUser(id: string): Promise<UserServiceResponse> {
+        const response: AxiosResponse<UserServiceResponse> = await this.api.del(`${this.baseUrl}/${id}`);
         return response.data;
     }
 }

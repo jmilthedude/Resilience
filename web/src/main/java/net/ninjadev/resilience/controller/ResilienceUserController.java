@@ -27,10 +27,10 @@ public class ResilienceUserController {
     private final ResilienceUserService resilienceUserService;
     private final PasswordAuthorization passwordAuthorization;
 
-    @GetMapping("{username}")
+    @GetMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResilienceUserResponse> getUser(@PathVariable String username) {
-        return this.resilienceUserService.findByUsername(username)
+    public ResponseEntity<ResilienceUserResponse> getUser(@PathVariable String id) {
+        return this.resilienceUserService.findById(id)
                 .map(user -> ResponseEntity.ok(new ResilienceUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -59,10 +59,19 @@ public class ResilienceUserController {
         return ResponseEntity.ok("User added successfully: " + user.getUsername());
     }
 
-    @DeleteMapping("{username}")
+    @PatchMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
-        if (this.resilienceUserService.deleteByUsername(username)) {
+    public ResponseEntity<ResilienceUserResponse> updateUser(@PathVariable String id, @Valid @RequestBody AddUserRequest user) {
+        return this.resilienceUserService.update(id, user)
+                .map(ResilienceUserResponse::new)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+        if (this.resilienceUserService.deleteById(id)) {
             return ResponseEntity.ok("User deleted successfully.");
         }
         return ResponseEntity.notFound().build();

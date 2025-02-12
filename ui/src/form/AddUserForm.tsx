@@ -19,11 +19,21 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
         e.preventDefault();
 
         UserService.addUser(userData)
-            .catch(error => {alert(error.message)})
-            .then(() => {onSuccess && onSuccess(userData)})
-            .finally(() => {
-                setUserData({id: "", name: "", username: "", password: "", role: "USER"})
+            .then(() => {
+                onSuccess && onSuccess(userData);
                 alert("User added successfully!");
+                setUserData({id: "", name: "", username: "", password: "", role: "USER"});
+            })
+            .catch(error => {
+                let data = error.response.data;
+                if (data && data.message && data.details) {
+                    const errorMessage = data.message || "An error occurred.";
+                    const errorDetails = data.details ? data.details.join("\n") : "";
+
+                    alert(`${errorMessage}\n${errorDetails}`);
+                } else {
+                    alert("An unexpected error occurred. Please try again.");
+                }
             });
     };
 
@@ -34,34 +44,34 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
             </Title>
             <form onSubmit={handleSubmit}>
                 <Input autoComplete="new-name"
-                    name="name"
-                    radius="lg"
-                    mb="sm"
-                    type="text"
-                    placeholder="Name"
-                    value={userData.name}
-                    onChange={handleChange}
-                    required
+                       name="name"
+                       radius="lg"
+                       mb="sm"
+                       type="text"
+                       placeholder="Name"
+                       value={userData.name}
+                       onChange={handleChange}
+                       required
                 />
                 <Input autoComplete="new-username"
-                    name="username"
-                    radius="lg"
-                    mb="sm"
-                    type="text"
-                    placeholder="Username"
-                    value={userData.username}
-                    onChange={handleChange}
-                    required
+                       name="username"
+                       radius="lg"
+                       mb="sm"
+                       type="text"
+                       placeholder="Username"
+                       value={userData.username}
+                       onChange={handleChange}
+                       required
                 />
                 <Input autoComplete="new-password"
-                    name="password"
-                    radius="lg"
-                    mb="sm"
-                    type="password"
-                    placeholder="Password"
-                    value={userData.password}
-                    onChange={handleChange}
-                    required
+                       name="password"
+                       radius="lg"
+                       mb="sm"
+                       type="password"
+                       placeholder="Password"
+                       value={userData.password}
+                       onChange={handleChange}
+                       required
                 />
                 <Button variant="filled" fullWidth color="teal" radius="lg" type="submit">
                     Submit

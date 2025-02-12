@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/login",
                                 "/user-login",
+                                "/api/v1/auth/status",
                                 "/register",
                                 "/static/**",
                                 "/error")

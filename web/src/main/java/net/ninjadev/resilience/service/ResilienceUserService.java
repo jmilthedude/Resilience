@@ -3,16 +3,18 @@ package net.ninjadev.resilience.service;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.ninjadev.resilience.config.ResilienceConfiguration;
-import net.ninjadev.resilience.request.AddUserRequest;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.repository.ResilienceUserRepository;
+import net.ninjadev.resilience.request.AddUserRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResilienceUserService {
@@ -49,11 +51,9 @@ public class ResilienceUserService {
     }
 
     @Transactional
-    public boolean deleteByUsername(String username) {
-        if (this.resilienceUserRepository.findByUsername(username).isEmpty()) {
-            return false;
-        }
-        this.resilienceUserRepository.deleteByUsername(username);
+    public boolean deleteById(String id) {
+        log.info("Deleting user with id: {}", id);
+        this.resilienceUserRepository.deleteById(Long.parseLong(id));
         return true;
     }
 
@@ -71,5 +71,17 @@ public class ResilienceUserService {
         existingUser.setPassword(this.passwordEncoder.encode(newPassword));
         this.resilienceUserRepository.save(existingUser);
         return true;
+    }
+
+    public Optional<ResilienceUser> update(String id, AddUserRequest user) {
+        Optional<ResilienceUser> existingUser = this.resilienceUserRepository.findById(Long.parseLong(id));
+        existingUser.ifPresent(u -> {
+            u.setName(user.getName());
+            u.setUsername(user.getUsername());
+            u.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            u.setRole(user.getRole());
+            this.resilienceUserRepository.save(u);
+        });
+        return existingUser;
     }
 }

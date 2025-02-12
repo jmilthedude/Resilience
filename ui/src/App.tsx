@@ -14,13 +14,10 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Navigate to="/users" replace />} />
-
                         <Route path="users" element={<PrivateRoute><UserPage /></PrivateRoute>} />
                         <Route path="users/add" element={<PrivateRoute><AddUserForm /></PrivateRoute>} />
                     </Route>
-
                     <Route path="/login" element={<UserLoginForm />} />
-
                     <Route path="*" element={<Navigate to="/users" />} />
                 </Routes>
             </Router>
