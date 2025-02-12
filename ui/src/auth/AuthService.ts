@@ -1,7 +1,8 @@
 import useApi from "../api/axiosInstance";
+import {AxiosResponse} from "axios";
 
 interface AuthStatusResponse {
-    isAuthenticated: boolean;
+    authenticated: boolean;
 }
 
 class AuthService {
@@ -17,8 +18,8 @@ class AuthService {
     }
 
     public async checkAuthStatus(): Promise<boolean> {
-        const response = await this.api.get(`${this.baseUrl}/status`);
-        return response.data;
+        const response: AxiosResponse<AuthStatusResponse> = await this.api.get(`${this.baseUrl}/status`);
+        return response.data.authenticated;
     }
 }
 
