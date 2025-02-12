@@ -6,9 +6,20 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yml
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: root
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
     password: password
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+  sql:
+    init:
+      platform: h2
 
 springdoc:
   api-docs:
