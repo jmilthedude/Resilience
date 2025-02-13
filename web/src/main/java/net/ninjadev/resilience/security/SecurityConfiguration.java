@@ -20,6 +20,7 @@ public class SecurityConfiguration {
     private static final String[] OPEN_URLS = {"/login",
             "/user-login",
             "/api/v1/auth/status",
+            "/api/v1/users/me",
             "/register",
             "/static/**",
             "/error",

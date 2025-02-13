@@ -37,6 +37,9 @@ public class ResilienceUserController {
 
     @GetMapping("/me")
     public ResponseEntity<ResilienceUserResponse> getCurrentUser(Authentication authentication) {
+        if(authentication == null) {
+            return ResponseEntity.status(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED).build();
+        }
         String username = authentication.getName();
         if(username.equals("admin")) {
             return ResponseEntity.ok(new ResilienceUserResponse(-1L, "admin", "admin", ResilienceUser.Role.ADMIN));

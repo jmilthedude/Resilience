@@ -13,9 +13,11 @@ const Layout = () => {
     const [user, setUser] = React.useState<User | null>(null);
 
     useEffect(() => {
-        userService.getCurrentUser().then((user) => {
-            setUser(user);
-        });
+        if (isLoggedIn) {
+            userService.getCurrentUser().then((user) => {
+                setUser(user);
+            });
+        }
     }, []);
 
     if (!isLoggedIn) {
