@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import {NavLink, Outlet} from "react-router-dom"; // To render child routes
-import {AppShell, Burger, SimpleGrid} from "@mantine/core";
+import {Outlet} from "react-router-dom"; // To render child routes
+import {AppShell, Burger, NavLink, SimpleGrid} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {useAuth} from "./auth/AuthProvider";
 import userService from "./api/services/UserService";
@@ -71,26 +71,26 @@ const Layout = () => {
                     />
                 </div>
                 <SimpleGrid cols={1} spacing="xs" style={{marginTop: 20, paddingLeft: 20}}>
-                    <NavLink to="/dashboard" style={{
+                    <NavLink style={{
                         textDecoration: 'none',
                         display: "flex",
                         alignItems: "center",
                         gap: "10px"
                     }}><FiPieChart/>Dashboard</NavLink>
-                    <NavLink to="/accounts" style={{
+                    <NavLink style={{
                         textDecoration: 'none',
                         display: "flex",
                         alignItems: "center",
                         gap: "10px"
                     }}><FiDollarSign/> Accounts</NavLink>
-                    <NavLink to="/settings" style={{
+                    <NavLink style={{
                         textDecoration: 'none',
                         display: "flex",
                         alignItems: "center",
                         gap: "10px"
                     }}><FiSettings/>Settings</NavLink>
                     {user?.role === 'ADMIN' && (
-                        <NavLink to="/users" style={{textDecoration: 'none', marginTop: 20}}>Admin</NavLink>
+                        <NavLink style={{textDecoration: 'none', marginTop: 20}}>Admin</NavLink>
                     )}
                 </SimpleGrid>
             </AppShell.Navbar>
