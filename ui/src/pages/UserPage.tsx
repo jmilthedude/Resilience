@@ -61,9 +61,11 @@ const UserPage = () => {
     const renderUserCards = () =>
         users.map((user) => (
             <Card key={user.id} shadow="sm" padding="lg" className={styles.card}>
-                <ActionIcon color="red"
-                            style={{position: "absolute", top: "16px", right: "16px"}}
-                            onClick={() => handleDeleteClick(user.id)}>
+                <ActionIcon
+                    variant={"filled"}
+                    color={"rgba(164,0,0, 1)"}
+                    style={{position: "absolute", top: "16px", right: "16px"}}
+                    onClick={() => handleDeleteClick(user.id)}>
                     <FiX/>
                 </ActionIcon>
                 <Group>
@@ -74,7 +76,7 @@ const UserPage = () => {
                     </div>
                 </Group>
                 <Button
-                    variant="light"
+                    variant="outline" color="rgba(0,198,198, 1)"
                     fullWidth
                     mt="md"
                     onClick={() => {
@@ -87,12 +89,10 @@ const UserPage = () => {
             </Card>
         ));
 
-    // Error and Loading States
     if (loading) return <div>Loading users...</div>;
 
     if (error) return <div>Error: {error}</div>;
 
-    // Main Return
     return (
         <div style={{margin: "0 auto", maxWidth: 800}}>
             <div className={styles.header}>

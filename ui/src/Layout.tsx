@@ -5,7 +5,7 @@ import {useDisclosure} from "@mantine/hooks";
 import {useAuth} from "./auth/AuthProvider";
 import userService from "./api/services/UserService";
 import {User} from "./types/user";
-import {FiDollarSign, FiPieChart, FiSettings} from "react-icons/fi";
+import {FiBriefcase, FiDollarSign, FiPieChart, FiSettings} from "react-icons/fi";
 
 const Layout = () => {
     const [opened, {toggle}] = useDisclosure();
@@ -18,7 +18,7 @@ const Layout = () => {
                 setUser(user);
             });
         }
-    }, []);
+    }, [isLoggedIn]);
 
     if (!isLoggedIn) {
         return <Outlet/>
@@ -27,10 +27,11 @@ const Layout = () => {
     return (
         <AppShell
             transitionTimingFunction="ease"
+            transitionDuration={500}
             navbar={{
                 width: opened ? 225 : 0,
                 breakpoint: 'sm',
-                collapsed: {mobile: !opened}
+                collapsed: {mobile: !opened},
             }}
         >
             <Burger
@@ -38,17 +39,14 @@ const Layout = () => {
                     position: "absolute",
                     left: 20,
                     top: 20,
+                    zIndex: 100,
                 }}
                 opened={opened}
-                onClick={() => {
-                    console.log("Toggling");
-                    toggle();
-                }
-                }
+                onClick={toggle}
                 size="sm"
             />
             <AppShell.Navbar style={{
-                transition: "width .3s",
+                transition: "width 0.5s ease",
                 overflow: "hidden",
             }}>
                 <div style={{
@@ -71,27 +69,37 @@ const Layout = () => {
                     />
                 </div>
                 <SimpleGrid cols={1} spacing="xs" style={{marginTop: 20, paddingLeft: 20}}>
-                    <NavLink style={{
-                        textDecoration: 'none',
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px"
-                    }}><FiPieChart/>Dashboard</NavLink>
-                    <NavLink style={{
-                        textDecoration: 'none',
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px"
-                    }}><FiDollarSign/> Accounts</NavLink>
-                    <NavLink style={{
-                        textDecoration: 'none',
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px"
-                    }}><FiSettings/>Settings</NavLink>
-                    {user?.role === 'ADMIN' && (
-                        <NavLink style={{textDecoration: 'none', marginTop: 20}}>Admin</NavLink>
-                    )}
+                    <NavLink label={"Dashboard"}
+                             leftSection={<FiPieChart/>}
+                             style={{
+                                 textDecoration: 'none',
+                                 display: "flex",
+                                 alignItems: "center"
+                             }}/>
+                    <NavLink label={"Accounts"}
+                             leftSection={<FiDollarSign/>}
+                             style={{
+                                 textDecoration: 'none',
+                                 display: "flex",
+                                 alignItems: "center"
+                             }}/>
+                    <NavLink label={"Settings"}
+                             leftSection={<FiSettings/>}
+                             childrenOffset={40}
+                             style={{
+                                 textDecoration: 'none',
+                                 display: "flex",
+                                 alignItems: "center"
+                             }}>{user?.role === 'ADMIN' &&
+                        (
+                            <NavLink label={"Admin"}
+                                     leftSection={<FiBriefcase/>}
+                                     style={{
+                                         textDecoration: 'none'
+                                     }}
+                            />
+                        )}
+                    </NavLink>
                 </SimpleGrid>
             </AppShell.Navbar>
             <AppShell.Main><Outlet/></AppShell.Main>

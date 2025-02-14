@@ -19,7 +19,7 @@ const AddUserButton = ({ setAddModalOpen }: { setAddModalOpen: (open: boolean) =
                 fontSize: isMobile ? "25px" : "inherit", // Larger font size for the + icon
 
             }}
-            color="teal"
+            color="rgba(0,164,164,1)"
             onClick={() => setAddModalOpen(true)}
         >
             {isMobile ? <FiPlus size={25} /> : "Add User"} {/* Show only + icon on mobile */}
