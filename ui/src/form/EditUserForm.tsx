@@ -41,7 +41,7 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
     };
 
     return (
-        <Container size="md" style={{maxWidth: 400, margin: "50px auto", textAlign: "center"}}>
+        <Container size="md" style={{maxWidth: 400, textAlign: "center"}}>
             <Title order={2} mb="lg">
                 Edit User
             </Title>

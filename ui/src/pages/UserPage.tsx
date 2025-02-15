@@ -1,15 +1,25 @@
 import {useEffect, useState} from "react";
-import {ActionIcon, Button, Card, Group, Modal, SimpleGrid, Text} from "@mantine/core";
+import {
+    ActionIcon,
+    Button,
+    Card,
+    Group,
+    MenuDropdown,
+    MenuItem,
+    Modal,
+    SimpleGrid,
+    Text
+} from "@mantine/core";
+import {Menu, MenuTarget} from "@mantine/core";
 import AddUserForm from "../form/AddUserForm";
 import EditUserForm from "../form/EditUserForm";
 import {User} from "../types/user";
 import styles from "./UserPage.module.css";
 import UserService from '../api/services/UserService';
 import AddUserButton from "../components/AddUserButton";
-import {FiX} from "react-icons/fi";
+import {FiEdit, FiMoreVertical, FiTrash2} from "react-icons/fi";
 
 const UserPage = () => {
-    // State Management
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -19,7 +29,6 @@ const UserPage = () => {
     const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState<string | null>(null);
 
-    // Fetch Users
     useEffect(() => {
         const fetchUsers = () => {
             UserService.listUsers()
@@ -30,7 +39,6 @@ const UserPage = () => {
         fetchUsers();
     }, []);
 
-    // Handlers
     const handleAddUser = (newUser: User) => {
         setUsers((prev) => [...prev, newUser]);
         setAddModalOpen(false);
@@ -57,17 +65,31 @@ const UserPage = () => {
             });
     };
 
-    // Render Functions
     const renderUserCards = () =>
         users.map((user) => (
             <Card key={user.id} shadow="sm" padding="lg" className={styles.card}>
-                <ActionIcon
-                    variant={"filled"}
-                    color={"rgba(164,0,0, 1)"}
-                    style={{position: "absolute", top: "16px", right: "16px"}}
-                    onClick={() => handleDeleteClick(user.id)}>
-                    <FiX/>
-                </ActionIcon>
+                <Menu shadow="md" width={100} position="bottom-end">
+                    <MenuTarget>
+                        <ActionIcon
+                            variant={"light"}
+                            color={"rgba(128,128,128, 1)"}
+                            style={{position: "absolute", top: "16px", right: "16px"}}
+                        >
+                            <FiMoreVertical/>
+                        </ActionIcon>
+                    </MenuTarget>
+                    <MenuDropdown>
+                        <MenuItem leftSection={<FiEdit/>} onClick={() => {
+                            setSelectedUser(user);
+                            setEditModalOpen(true);
+                        }}>
+                            Edit
+                        </MenuItem>
+                        <MenuItem leftSection={<FiTrash2/>} color="red" onClick={() => handleDeleteClick(user.id)}>
+                            Delete
+                        </MenuItem>
+                    </MenuDropdown>
+                </Menu>
                 <Group>
                     <div>
                         <Text fw={600} size="md">{user.name}</Text>
@@ -75,17 +97,6 @@ const UserPage = () => {
                         <Text size="md" c="dimmed">Role: {user.role}</Text>
                     </div>
                 </Group>
-                <Button
-                    variant="outline" color="rgba(0,198,198, 1)"
-                    fullWidth
-                    mt="md"
-                    onClick={() => {
-                        setSelectedUser(user);
-                        setEditModalOpen(true);
-                    }}
-                >
-                    Edit User
-                </Button>
             </Card>
         ));
 
