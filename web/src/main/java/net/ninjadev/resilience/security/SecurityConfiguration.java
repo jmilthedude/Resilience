@@ -17,10 +17,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] OPEN_URLS = {"/login",
+    private static final String[] OPEN_URLS = {
+            "/api/v1/login",
             "/user-login",
             "/api/v1/auth/status",
-            "/api/v1/users/me",
             "/register",
             "/static/**",
             "/error",
@@ -52,8 +52,7 @@ public class SecurityConfiguration {
 
     private Customizer<FormLoginConfigurer<HttpSecurity>> getFormLoginCustomizer() {
         return form -> form
-                .loginPage("/user-login")
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/api/v1/login")
                 .successHandler(((request, response, authentication) -> {
                     response.setStatus(HttpStatus.OK.value());
                 }))

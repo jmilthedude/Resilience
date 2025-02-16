@@ -9,7 +9,7 @@ class Api {
 
     constructor() {
         this.api = axios.create({
-            baseURL: 'http://localhost:8081/api/v1',
+            baseURL: process.env.REACT_APP_API_BASE_URL + '/api/v1',
             timeout: 10000,
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ class Api {
     };
 
     public async postForm(url: string, data: Record<string, string>) {
-        return axios.post(
+        return await this.api.post(
             url,
             new URLSearchParams(data).toString(),
             {
