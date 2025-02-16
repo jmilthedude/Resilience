@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Outlet} from "react-router-dom"; // To render child routes
+import {Outlet, Link} from "react-router-dom"; // To render child routes
 import {AppShell, Burger, NavLink, SimpleGrid} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {useAuth} from "./auth/AuthProvider";
@@ -8,7 +8,7 @@ import {User} from "./types/user";
 import {FiBriefcase, FiDollarSign, FiPieChart, FiSettings} from "react-icons/fi";
 
 const Layout = () => {
-    const [opened, {toggle}] = useDisclosure();
+    const [opened, {toggle}] = useDisclosure(true);
     const {isLoggedIn} = useAuth();
     const [user, setUser] = React.useState<User | null>(null);
 
@@ -77,6 +77,7 @@ const Layout = () => {
                                  alignItems: "center"
                              }}/>
                     <NavLink label={"Accounts"}
+                             component={Link} to="/accounts"
                              leftSection={<FiDollarSign/>}
                              style={{
                                  textDecoration: 'none',

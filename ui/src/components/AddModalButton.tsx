@@ -1,9 +1,12 @@
 import React from "react";
-import { Button } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
-import { FiPlus } from "react-icons/fi";
+import {Button} from "@mantine/core";
+import {useMediaQuery} from "@mantine/hooks";
+import {FiPlus} from "react-icons/fi";
 
-const AddUserButton = ({ setAddModalOpen }: { setAddModalOpen: (open: boolean) => void }) => {
+const AddModalButton = ({setAddModalOpen, text}: {
+    setAddModalOpen: (open: boolean) => void,
+    text: string
+}) => {
     const isMobile = useMediaQuery("(max-width: 768px)"); // Check if the screen is mobile-sized
 
     return (
@@ -22,9 +25,9 @@ const AddUserButton = ({ setAddModalOpen }: { setAddModalOpen: (open: boolean) =
             color="rgba(0,164,164,1)"
             onClick={() => setAddModalOpen(true)}
         >
-            {isMobile ? <FiPlus size={25} /> : "Add User"} {/* Show only + icon on mobile */}
+            {isMobile ? <FiPlus size={25}/> : text} {/* Show only + icon on mobile */}
         </Button>
     );
 };
 
-export default AddUserButton;
+export default AddModalButton;

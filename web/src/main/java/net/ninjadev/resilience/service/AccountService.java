@@ -85,6 +85,15 @@ public class AccountService {
         this.accountRepository.save(account);
     }
 
+    public boolean deleteById(String id) {
+        Optional<Account> account = this.accountRepository.findById(Long.parseLong(id));
+        if (account.isPresent()) {
+            this.accountRepository.delete(account.get());
+            return true;
+        }
+        return false;
+    }
+
     public double getPendingBalance(long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for ID: " + accountId));
