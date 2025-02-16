@@ -1,16 +1,17 @@
 import React, {useEffect} from "react";
 import {Outlet, Link} from "react-router-dom"; // To render child routes
 import {AppShell, Burger, NavLink, SimpleGrid} from "@mantine/core";
-import {useDisclosure} from "@mantine/hooks";
+import {useDisclosure, useMediaQuery} from "@mantine/hooks";
 import {useAuth} from "./auth/AuthProvider";
 import userService from "./api/services/UserService";
 import {User} from "./types/user";
 import {FiBriefcase, FiDollarSign, FiPieChart, FiSettings} from "react-icons/fi";
 
 const Layout = () => {
-    const [opened, {toggle}] = useDisclosure(true);
+    const [opened, {toggle, close}] = useDisclosure(true);
     const {isLoggedIn} = useAuth();
     const [user, setUser] = React.useState<User | null>(null);
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -19,6 +20,12 @@ const Layout = () => {
             });
         }
     }, [isLoggedIn]);
+
+    const handleLinkClick = () => {
+        if (isMobile) {
+            close();
+        }
+    };
 
     if (!isLoggedIn) {
         return <Outlet/>
@@ -83,7 +90,18 @@ const Layout = () => {
                                  textDecoration: 'none',
                                  display: "flex",
                                  alignItems: "center"
-                             }}/>
+                             }}
+                             onClick={handleLinkClick}/>
+                    {user?.role === 'ADMIN' &&
+                        (
+                            <NavLink label={"Users"}
+                                     component={Link} to="/users"
+                                     leftSection={<FiBriefcase/>}
+                                     style={{
+                                         textDecoration: 'none'
+                                     }}
+                                     onClick={handleLinkClick}/>
+                        )}
                     <NavLink label={"Settings"}
                              leftSection={<FiSettings/>}
                              childrenOffset={40}
@@ -91,15 +109,7 @@ const Layout = () => {
                                  textDecoration: 'none',
                                  display: "flex",
                                  alignItems: "center"
-                             }}>{user?.role === 'ADMIN' &&
-                        (
-                            <NavLink label={"Admin"}
-                                     leftSection={<FiBriefcase/>}
-                                     style={{
-                                         textDecoration: 'none'
-                                     }}
-                            />
-                        )}
+                             }}>
                     </NavLink>
                 </SimpleGrid>
             </AppShell.Navbar>
