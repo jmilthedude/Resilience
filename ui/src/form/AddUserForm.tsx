@@ -19,9 +19,9 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
         e.preventDefault();
 
         UserService.addUser(userData)
-            .then(() => {
-                onSuccess && onSuccess(userData);
-                alert("User added successfully!");
+            .then(response => {
+                onSuccess && onSuccess(response);
+                alert("User added successfully! id="+ response.id);
                 setUserData({id: "", name: "", username: "", password: "", role: "USER"});
             })
             .catch(error => {

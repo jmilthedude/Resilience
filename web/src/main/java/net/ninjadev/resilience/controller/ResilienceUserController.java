@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -37,11 +36,11 @@ public class ResilienceUserController {
 
     @GetMapping("/me")
     public ResponseEntity<ResilienceUserResponse> getCurrentUser(Authentication authentication) {
-        if(authentication == null) {
+        if (authentication == null) {
             return ResponseEntity.status(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED).build();
         }
         String username = authentication.getName();
-        if(username.equals("admin")) {
+        if (username.equals("admin")) {
             return ResponseEntity.ok(new ResilienceUserResponse(-1L, "admin", "admin", ResilienceUser.Role.ADMIN));
         }
         return this.resilienceUserService.findByUsername(username)
@@ -57,12 +56,10 @@ public class ResilienceUserController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> addUser(@Valid @RequestBody AddUserRequest user) {
-        Optional<ResilienceUser> added = this.resilienceUserService.add(user);
-        if (added.isEmpty()) {
-            return ResponseEntity.badRequest().body("User exists.");
-        }
-        return ResponseEntity.ok("User added successfully: " + user.getUsername());
+    public ResponseEntity<ResilienceUserResponse> addUser(@Valid @RequestBody AddUserRequest user) {
+        return this.resilienceUserService.add(user)
+                .map(resilienceUser -> ResponseEntity.ok(new ResilienceUserResponse(resilienceUser)))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PatchMapping("{id}")
