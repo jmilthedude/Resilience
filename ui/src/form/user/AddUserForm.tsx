@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {Button, Container, Input, Title} from "@mantine/core";
-import {User} from "../types/user";
-import UserService from '../api/services/UserService';
+import {User} from "../../types/user";
+import UserService from '../../api/services/UserService';
 
 interface AddUserFormProps {
     onSuccess?: (newUser: User) => void

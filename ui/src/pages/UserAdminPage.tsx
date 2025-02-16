@@ -11,15 +11,15 @@ import {
     Text
 } from "@mantine/core";
 import {Menu, MenuTarget} from "@mantine/core";
-import AddUserForm from "../form/AddUserForm";
-import EditUserForm from "../form/EditUserForm";
+import AddUserForm from "../form/user/AddUserForm";
+import EditUserForm from "../form/user/EditUserForm";
 import {User} from "../types/user";
-import styles from "./UserPage.module.css";
+import styles from "./UserAdminPage.module.css";
 import UserService from '../api/services/UserService';
-import AddUserButton from "../components/AddUserButton";
+import AddModalButton from "../components/AddModalButton";
 import {FiEdit, FiMoreVertical, FiTrash2} from "react-icons/fi";
 
-const UserPage = () => {
+const UserAdminPage = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -109,7 +109,7 @@ const UserPage = () => {
             <div className={styles.header}>
                 <h1>User Management</h1>
             </div>
-            <AddUserButton setAddModalOpen={setAddModalOpen}/>
+            <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
             <div className={styles.scrollableContainer}>
                 <SimpleGrid cols={{sm: 1, lg: 2}} spacing="sm">{renderUserCards()}</SimpleGrid>
 
@@ -145,4 +145,4 @@ const UserPage = () => {
     );
 };
 
-export default UserPage;
+export default UserAdminPage;

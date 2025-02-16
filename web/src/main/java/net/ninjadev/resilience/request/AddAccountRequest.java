@@ -11,6 +11,8 @@ import net.ninjadev.resilience.entity.Account;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddAccountRequest {
+    @NotEmpty(message = "Account name cannot be empty")
+    private String name;
     @NotEmpty(message = "Account number cannot be empty")
     private String accountNumber;
     @NotNull(message = "Account type cannot be null")

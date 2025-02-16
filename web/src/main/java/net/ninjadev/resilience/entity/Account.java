@@ -24,6 +24,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "Account name cannot be empty")
+    private String name;
+
     @NotNull(message = "Account type cannot be null")
     private Type type;
 
@@ -49,6 +52,7 @@ public class Account {
     private List<RecurringTransaction> recurringTransactions = new ArrayList<>();
 
     public Account(AddAccountRequest accountRequest) {
+        this.name = accountRequest.getName();
         this.type = accountRequest.getType();
         this.accountNumber = accountRequest.getAccountNumber();
     }

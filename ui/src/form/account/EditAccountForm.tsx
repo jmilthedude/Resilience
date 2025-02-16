@@ -1,27 +1,27 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {Button, Container, Input, Title} from "@mantine/core";
-import {User} from "../types/user";
-import UserService from '../api/services/UserService';
+import {Account} from "../../types/account";
+import AccountService from '../../api/services/AccountService';
 
-interface EditUserFormProps {
-    user: User,
-    onSuccess?: (updatedUser: User) => void
+interface EditAccountFormProps {
+    account: Account,
+    onSuccess?: (updatedAccount: Account) => void
 }
 
-const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
-    const [userData, setUserData] = useState<User>(user);
+const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
+    const [accountData, setAccountData] = useState<Account>(account);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
-        setUserData((prev) => ({...prev, [name]: value}));
+        setAccountData((prev) => ({...prev, [name]: value}));
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        UserService.updateUser(userData.id, userData)
+        AccountService.updateAccount(accountData.id, accountData)
             .then(() => {
-                onSuccess && onSuccess(userData)
+                onSuccess && onSuccess(accountData)
             })
             .catch(error => {
                 let data = error.response.data;
@@ -35,15 +35,15 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
                 }
             })
             .finally(() => {
-                setUserData({id: "", name: "", username: "", password: "", role: "USER"})
-                alert("User updated successfully!");
+                setAccountData({id: "", name: "", accountNumber: "", type: "CHECKING"})
+                alert("Account updated successfully!");
             });
     };
 
     return (
         <Container size="md" style={{maxWidth: 400, textAlign: "center"}}>
             <Title order={2} mb="lg">
-                Edit User
+                Edit Account
             </Title>
             <form onSubmit={handleSubmit}>
                 <Input
@@ -52,27 +52,27 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
                     mb="sm"
                     type="text"
                     placeholder="Name"
-                    value={userData.name}
+                    value={accountData.name}
                     onChange={handleChange}
                     required
                 />
                 <Input
-                    name="username"
+                    name="accountNumber"
                     radius="lg"
                     mb="sm"
                     type="text"
-                    placeholder="Username"
-                    value={userData.username}
+                    placeholder="Account Number"
+                    value={accountData.accountNumber}
                     onChange={handleChange}
                     required
                 />
                 <Input
-                    name="password"
+                    name="type"
                     radius="lg"
                     mb="sm"
-                    type="password"
-                    placeholder="Password"
-                    value={userData.password}
+                    type="text"
+                    placeholder="Account Type"
+                    value={accountData.type}
                     onChange={handleChange}
                 />
                 <Button variant="filled" fullWidth color="teal" radius="lg" type="submit">
@@ -83,4 +83,4 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
     );
 };
 
-export default EditUserPage;
+export default EditAccountPage;

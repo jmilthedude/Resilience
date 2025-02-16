@@ -1,8 +1,8 @@
 import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Container, Input} from "@mantine/core";
-import useApi from "../api/axiosInstance";
-import {useAuth} from "../auth/AuthProvider";
+import useApi from "../../api/axiosInstance";
+import {useAuth} from "../../auth/AuthProvider";
 
 
 const LoginPage = () => {

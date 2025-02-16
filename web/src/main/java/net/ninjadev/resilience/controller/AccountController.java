@@ -5,18 +5,20 @@ import net.ninjadev.resilience.entity.Account;
 import net.ninjadev.resilience.entity.ResilienceUser;
 import net.ninjadev.resilience.request.AddAccountRequest;
 import net.ninjadev.resilience.response.AccountResponse;
+import net.ninjadev.resilience.response.ResilienceUserResponse;
 import net.ninjadev.resilience.service.AccountService;
 import net.ninjadev.resilience.service.ResilienceUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/account")
+@RequestMapping("/api/v1/accounts")
 public class AccountController {
 
     private final AccountService accountService;
@@ -39,14 +41,10 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addAccount(@RequestBody AddAccountRequest account) {
-        try {
-            return this.accountService.add(account)
-                    .map(added -> ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(added.getId())))
-                    .orElse(ResponseEntity.badRequest().body("Account exists."));
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body("Account Addition Failed: error=" + ex.getMessage());
-        }
+    public ResponseEntity<AccountResponse> addAccount(@RequestBody AddAccountRequest account) {
+        return this.accountService.add(account)
+                .map(addedAccount -> ResponseEntity.ok(new AccountResponse(addedAccount)))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{accountId}/addUser/{userId}")
@@ -64,5 +62,14 @@ public class AccountController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<AccountResponse>> getByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(this.accountService.getByUserId(userId).stream().map(AccountResponse::new).toList());
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteAccount(@PathVariable String id) {
+        if (this.accountService.deleteById(id)) {
+            return ResponseEntity.ok("Account deleted successfully.");
+        }
+        return ResponseEntity.notFound().build();
     }
 }
