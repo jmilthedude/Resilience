@@ -10,6 +10,10 @@ spring:
     username: root
     password: password
 
+server:
+  address: ${SERVER_ADDRESS}
+  port: ${SERVER_PORT}
+
 springdoc:
   api-docs:
     enabled: true
