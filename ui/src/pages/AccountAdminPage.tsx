@@ -93,7 +93,8 @@ const AccountAdminPage = () => {
                 <Group>
                     <div>
                         <Text fw={600} size="md">{account.name}</Text>
-                        <Text size="md" c="dimmed">Account Number: {account.accountNumber}</Text>
+                        <Text size="md" c="dimmed">Account Number: {"**" + account.accountNumber.substring(account.accountNumber.length - 3)}</Text>
+                        <Text size="md" c="dimmed">Account Type: {account.type}</Text>
                     </div>
                 </Group>
             </Card>
