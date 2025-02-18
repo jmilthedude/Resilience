@@ -19,3 +19,14 @@
     overflow-y: auto;
     height: calc(100vh - 120px);
 }
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-actions {
+    display: flex;
+    gap: 10px;
+}

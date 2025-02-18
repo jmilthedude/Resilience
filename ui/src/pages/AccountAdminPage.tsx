@@ -4,13 +4,14 @@ import {
     Button,
     Card,
     Group,
+    Menu,
     MenuDropdown,
     MenuItem,
+    MenuTarget,
     Modal,
     SimpleGrid,
     Text
 } from "@mantine/core";
-import {Menu, MenuTarget} from "@mantine/core";
 import AddAccountForm from "../form/account/AddAccountForm";
 import EditAccountForm from "../form/account/EditAccountForm";
 import {Account} from "../types/account";
@@ -114,13 +115,13 @@ const AccountAdminPage = () => {
                 <SimpleGrid cols={{sm: 1, lg: 2}} spacing="sm">{renderAccountCards()}</SimpleGrid>
 
                 {/* Add Account Modal */}
-                <Modal opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
+                <Modal title={"Add Account"} opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
                     <AddAccountForm onSuccess={handleAddAccount}/>
                 </Modal>
 
                 {/* Edit Account Modal */}
                 {selectedAccount && (
-                    <Modal opened={isEditModalOpen} onClose={() => {
+                    <Modal title={"Edit Account"} opened={isEditModalOpen} onClose={() => {
                         setEditModalOpen(false);
                         setSelectedAccount(null);
                     }}>

@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import {Button, Container, Input, Title} from "@mantine/core";
+import {Button, Container, TextInput} from "@mantine/core";
 import {User} from "../../types/user";
 import UserService from '../../api/services/UserService';
 
@@ -9,7 +9,13 @@ interface EditUserFormProps {
 }
 
 const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
-    const [userData, setUserData] = useState<User>(user);
+    const [userData, setUserData] = useState<User>({
+        id: user.id || "",
+        name: user.name || "",
+        username: user.username || "",
+        password: user.password || "",
+        role: user.role || "USER"
+    });
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -42,23 +48,22 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
 
     return (
         <Container size="md" style={{maxWidth: 400, textAlign: "center"}}>
-            <Title order={2} mb="lg">
-                Edit User
-            </Title>
             <form onSubmit={handleSubmit}>
-                <Input
+                <TextInput
+                    label={"Full Name"}
                     name="name"
-                    radius="lg"
+                    radius="md"
                     mb="sm"
                     type="text"
-                    placeholder="Name"
+                    placeholder="Full Name"
                     value={userData.name}
                     onChange={handleChange}
                     required
                 />
-                <Input
+                <TextInput
+                    label={"Username"}
                     name="username"
-                    radius="lg"
+                    radius="md"
                     mb="sm"
                     type="text"
                     placeholder="Username"
@@ -66,16 +71,18 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
                     onChange={handleChange}
                     required
                 />
-                <Input
+                <TextInput
+                    error={userData.password && (userData.password.length < 8 ? "Password must be at least 8 characters long" : "")}
+                    label={"Password"}
                     name="password"
-                    radius="lg"
+                    radius="md"
                     mb="sm"
                     type="password"
                     placeholder="Password"
                     value={userData.password}
                     onChange={handleChange}
                 />
-                <Button variant="filled" fullWidth color="teal" radius="lg" type="submit">
+                <Button variant="filled" fullWidth color="teal" radius="md" type="submit" style={{marginTop: "40px"}}>
                     Submit
                 </Button>
             </form>

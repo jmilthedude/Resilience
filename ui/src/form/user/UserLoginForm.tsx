@@ -35,7 +35,7 @@ const LoginPage = () => {
 
     return (
         <Container size="md" style={{marginTop: "50px", maxWidth: "400px"}}>
-            <h2 style={{marginBottom: "5px"}}>Login</h2>
+            <h2 style={{marginBottom: "5px"}}>Please Login</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <Input style={{marginBottom: "15px"}} radius="lg"

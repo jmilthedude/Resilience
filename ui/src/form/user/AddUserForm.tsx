@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import {Button, Container, Input, Title} from "@mantine/core";
+import {Button, Container, TextInput} from "@mantine/core";
 import {User} from "../../types/user";
 import UserService from '../../api/services/UserService';
 
@@ -39,41 +39,41 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
 
     return (
         <Container size="md" style={{maxWidth: 400, margin: "auto", textAlign: "center"}}>
-            <Title order={2} mb="lg">
-                Add User
-            </Title>
             <form onSubmit={handleSubmit}>
-                <Input autoComplete="new-name"
-                       name="name"
-                       radius="lg"
-                       mb="sm"
-                       type="text"
-                       placeholder="Name"
-                       value={userData.name}
-                       onChange={handleChange}
-                       required
+                <TextInput
+                    label={"Full Name"}
+                    name="name"
+                    radius="md"
+                    mb="sm"
+                    type="text"
+                    placeholder="Full Name"
+                    value={userData.name}
+                    onChange={handleChange}
+                    required
                 />
-                <Input autoComplete="new-username"
-                       name="username"
-                       radius="lg"
-                       mb="sm"
-                       type="text"
-                       placeholder="Username"
-                       value={userData.username}
-                       onChange={handleChange}
-                       required
+                <TextInput
+                    label={"Username"}
+                    name="username"
+                    radius="md"
+                    mb="sm"
+                    type="text"
+                    placeholder="Username"
+                    value={userData.username}
+                    onChange={handleChange}
+                    required
                 />
-                <Input autoComplete="new-password"
-                       name="password"
-                       radius="lg"
-                       mb="sm"
-                       type="password"
-                       placeholder="Password"
-                       value={userData.password}
-                       onChange={handleChange}
-                       required
+                <TextInput
+                    error={userData.password && (userData.password.length < 8 ? "Password must be at least 8 characters long" : "")}
+                    label={"Password"}
+                    name="password"
+                    radius="md"
+                    mb="sm"
+                    type="password"
+                    placeholder="Password"
+                    value={userData.password}
+                    onChange={handleChange}
                 />
-                <Button variant="filled" fullWidth color="teal" radius="lg" type="submit">
+                <Button variant="filled" fullWidth color="teal" radius="md" type="submit" style={{marginTop: "40px"}}>
                     Submit
                 </Button>
             </form>

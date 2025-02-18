@@ -1,16 +1,19 @@
 import {useEffect, useState} from "react";
 import {
     ActionIcon,
+    Box,
     Button,
     Card,
     Group,
+    LoadingOverlay,
+    Menu,
     MenuDropdown,
     MenuItem,
+    MenuTarget,
     Modal,
-    SimpleGrid,
+    Table,
     Text
 } from "@mantine/core";
-import {Menu, MenuTarget} from "@mantine/core";
 import AddUserForm from "../form/user/AddUserForm";
 import EditUserForm from "../form/user/EditUserForm";
 import {User} from "../types/user";
@@ -100,45 +103,97 @@ const UserAdminPage = () => {
             </Card>
         ));
 
-    if (loading) return <div>Loading users...</div>;
-
     if (error) return <div>Error: {error}</div>;
 
     return (
         <div style={{margin: "0 auto", maxWidth: 800}}>
-            <div className={styles.header}>
-                <h1>User Management</h1>
-            </div>
-            <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
-            <div className={styles.scrollableContainer}>
-                <SimpleGrid cols={{sm: 1, lg: 2}} spacing="sm">{renderUserCards()}</SimpleGrid>
+                <div className={styles.header}>
+                    <h1>User Management</h1>
+                </div>
 
-                {/* Add User Modal */}
-                <Modal opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
-                    <AddUserForm onSuccess={handleAddUser}/>
-                </Modal>
+                <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
+            <Box pos={"relative"}>
+                <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{radius: "lg", blur: 2}}/>
+                <Table striped highlightOnHover>
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th>Name</Table.Th>
+                            <Table.Th>Username</Table.Th>
+                            <Table.Th>Role</Table.Th>
+                            <Table.Th>Actions</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {users.map((user) => (
+                            <Table.Tr key={user.id}>
+                                <Table.Td width={"40%"}>{user.name}</Table.Td>
+                                <Table.Td width={"40%"}>{user.username}</Table.Td>
+                                <Table.Td width={"10%"}>{user.role}</Table.Td>
+                                <Table.Td width={"10%"} style={{textAlign: "right"}}>
+                                    <Menu shadow="md" width={100}>
+                                        <MenuTarget>
+                                            <ActionIcon variant={"light"} color={"rgba(128,128,128, 1)"}>
+                                                <FiMoreVertical/>
+                                            </ActionIcon>
+                                        </MenuTarget>
+                                        <MenuDropdown>
+                                            <MenuItem leftSection={<FiEdit/>} onClick={() => {
+                                                setSelectedUser(user);
+                                                setEditModalOpen(true);
+                                            }}>
+                                                Edit
+                                            </MenuItem>
+                                            <MenuItem leftSection={<FiTrash2/>} color="red"
+                                                      onClick={() => handleDeleteClick(user.id)}>
+                                                Delete
+                                            </MenuItem>
+                                        </MenuDropdown>
+                                    </Menu>
+                                </Table.Td>
+                            </Table.Tr>
+                        ))}
+                    </Table.Tbody>
+                </Table>
+            </Box>
 
-                {/* Edit User Modal */}
-                {selectedUser && (
-                    <Modal opened={isEditModalOpen} onClose={() => {
+            {/* Add User Modal */}
+            <Modal size={"sm"}
+                   title={`Add User`}
+                   overlayProps={{backgroundOpacity: 0.65, blur: 3,}}
+                   opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
+                <AddUserForm onSuccess={handleAddUser}/>
+            </Modal>
+
+            {/* Edit User Modal */}
+            {selectedUser && (
+                <Modal
+                    title={`Edit User`}
+                    size={"sm"}
+                    overlayProps={{backgroundOpacity: 0.65, blur: 3,}}
+                    opened={isEditModalOpen}
+                    onClose={() => {
                         setEditModalOpen(false);
                         setSelectedUser(null);
                     }}>
-                        <EditUserForm user={selectedUser} onSuccess={handleEditUser}/>
-                    </Modal>
-                )}
-
-                {/* Delete Confirmation Modal */}
-                <Modal opened={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)}
-                       title="Confirm Deletion">
-                    <Text>Are you sure you want to delete this user?</Text>
-                    <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
-                        <Button onClick={() => setConfirmDeleteModal(false)} style={{marginRight: 8}}>Cancel</Button>
-                        <Button color="red" onClick={() => userToDelete && deleteUser(userToDelete)}>Delete</Button>
-                    </div>
+                    <EditUserForm user={selectedUser} onSuccess={handleEditUser}/>
                 </Modal>
-            </div>
+            )}
 
+
+            {/* Delete Confirmation Modal */}
+            <Modal size={"sm"}
+                   overlayProps={{backgroundOpacity: 0.65, blur: 3,}}
+                   opened={confirmDeleteModal}
+                   onClose={() => setConfirmDeleteModal(false)}
+                   title="Confirm Deletion">
+                <Text>Are you sure you want to delete this user?</Text>
+                <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
+                    <Button variant={"light"} onClick={() => setConfirmDeleteModal(false)}
+                            style={{marginRight: 8}}>Cancel</Button>
+                    <Button variant={"outline"} color="red"
+                            onClick={() => userToDelete && deleteUser(userToDelete)}>Delete</Button>
+                </div>
+            </Modal>
 
         </div>
 

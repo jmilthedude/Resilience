@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import {Button, Container, Input, Title} from "@mantine/core";
+import {Button, Container, TextInput} from "@mantine/core";
 import {Account} from "../../types/account";
 import AccountService from '../../api/services/AccountService';
 
@@ -42,13 +42,11 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
 
     return (
         <Container size="md" style={{maxWidth: 400, textAlign: "center"}}>
-            <Title order={2} mb="lg">
-                Edit Account
-            </Title>
             <form onSubmit={handleSubmit}>
-                <Input
+                <TextInput
+                    label={"Account Name"}
                     name="name"
-                    radius="lg"
+                    radius="md"
                     mb="sm"
                     type="text"
                     placeholder="Name"
@@ -56,9 +54,10 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
                     onChange={handleChange}
                     required
                 />
-                <Input
+                <TextInput
+                    label={"Account Number"}
                     name="accountNumber"
-                    radius="lg"
+                    radius="md"
                     mb="sm"
                     type="text"
                     placeholder="Account Number"
@@ -66,16 +65,17 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
                     onChange={handleChange}
                     required
                 />
-                <Input
+                <TextInput
+                    label={"Account Type"}
                     name="type"
-                    radius="lg"
+                    radius="md"
                     mb="sm"
                     type="text"
                     placeholder="Account Type"
                     value={accountData.type}
                     onChange={handleChange}
                 />
-                <Button variant="filled" fullWidth color="teal" radius="lg" type="submit">
+                <Button variant="filled" fullWidth color="teal" radius="md" type="submit">
                     Submit
                 </Button>
             </form>
