@@ -1,19 +1,5 @@
 import {useEffect, useState} from "react";
-import {
-    ActionIcon,
-    Box,
-    Button,
-    Card,
-    Group,
-    LoadingOverlay,
-    Menu,
-    MenuDropdown,
-    MenuItem,
-    MenuTarget,
-    Modal,
-    Table,
-    Text
-} from "@mantine/core";
+import {ActionIcon, Box, Button, Card, Group, LoadingOverlay, Menu, MenuDropdown, MenuItem, MenuTarget, Modal, Table, Text} from "@mantine/core";
 import AddUserForm from "../form/user/AddUserForm";
 import EditUserForm from "../form/user/EditUserForm";
 import {User} from "../types/user";
@@ -30,7 +16,6 @@ const UserAdminPage = () => {
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
-    const [userToDelete, setUserToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUsers = () => {
@@ -53,14 +38,14 @@ const UserAdminPage = () => {
         setSelectedUser(null);
     };
 
-    const handleDeleteClick = (userId: string) => {
-        setUserToDelete(userId);
+    const handleDeleteClick = (user: User) => {
+        setSelectedUser(user);
         setConfirmDeleteModal(true);
     };
 
-    const deleteUser = async (userId: string) => {
-        UserService.deleteUser(userId)
-            .then(() => setUsers((prev) => prev.filter((user) => user.id !== userId)))
+    const deleteUser = async (user: User) => {
+        UserService.deleteUser(user.id)
+            .then(() => setUsers((prev) => prev.filter((u) => u.id !== user.id)))
             .catch((err) => alert(err.message || "An error occurred while trying to delete the user."))
             .finally(() => {
                 setConfirmDeleteModal(false);
@@ -68,50 +53,52 @@ const UserAdminPage = () => {
             });
     };
 
-    const renderUserCards = () =>
-        users.map((user) => (
-            <Card key={user.id} shadow="sm" padding="lg" className={styles.card}>
-                <Menu shadow="md" width={100} position="bottom-end">
-                    <MenuTarget>
-                        <ActionIcon
-                            variant={"light"}
-                            color={"rgba(128,128,128, 1)"}
-                            style={{position: "absolute", top: "16px", right: "16px"}}
-                        >
-                            <FiMoreVertical/>
-                        </ActionIcon>
-                    </MenuTarget>
-                    <MenuDropdown>
-                        <MenuItem leftSection={<FiEdit/>} onClick={() => {
-                            setSelectedUser(user);
-                            setEditModalOpen(true);
-                        }}>
-                            Edit
-                        </MenuItem>
-                        <MenuItem leftSection={<FiTrash2/>} color="red" onClick={() => handleDeleteClick(user.id)}>
-                            Delete
-                        </MenuItem>
-                    </MenuDropdown>
-                </Menu>
-                <Group>
-                    <div>
-                        <Text fw={600} size="md">{user.name}</Text>
-                        <Text size="md" c="dimmed">Username: {user.username}</Text>
-                        <Text size="md" c="dimmed">Role: {user.role}</Text>
-                    </div>
-                </Group>
-            </Card>
-        ));
-
     if (error) return <div>Error: {error}</div>;
+
+    function createEditMenu(user: User) {
+        return <Menu shadow="md" width={100}>
+            <MenuTarget>
+                <ActionIcon variant={"light"} color={"rgba(128,128,128, 1)"}>
+                    <FiMoreVertical/>
+                </ActionIcon>
+            </MenuTarget>
+            <MenuDropdown>
+                <MenuItem leftSection={<FiEdit/>} onClick={() => {
+                    setSelectedUser(user);
+                    setEditModalOpen(true);
+                }}>
+                    Edit
+                </MenuItem>
+                <MenuItem leftSection={<FiTrash2/>} color="red"
+                          onClick={() => handleDeleteClick(user)}>
+                    Delete
+                </MenuItem>
+            </MenuDropdown>
+        </Menu>;
+    }
+
+    function fillUserTable() {
+        return <>
+            {users.map((user) => (
+                <Table.Tr key={user.id}>
+                    <Table.Td width={"40%"}>{user.name}</Table.Td>
+                    <Table.Td width={"40%"}>{user.username}</Table.Td>
+                    <Table.Td width={"10%"}>{user.role}</Table.Td>
+                    <Table.Td width={"10%"} style={{textAlign: "right"}}>
+                        {createEditMenu(user)}
+                    </Table.Td>
+                </Table.Tr>
+            ))}
+        </>;
+    }
 
     return (
         <div style={{margin: "0 auto", maxWidth: 800}}>
-                <div className={styles.header}>
-                    <h1>User Management</h1>
-                </div>
+            <div className={styles.header}>
+                <h1>User Management</h1>
+            </div>
 
-                <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
+            <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
             <Box pos={"relative"}>
                 <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{radius: "lg", blur: 2}}/>
                 <Table striped highlightOnHover>
@@ -124,41 +111,14 @@ const UserAdminPage = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {users.map((user) => (
-                            <Table.Tr key={user.id}>
-                                <Table.Td width={"40%"}>{user.name}</Table.Td>
-                                <Table.Td width={"40%"}>{user.username}</Table.Td>
-                                <Table.Td width={"10%"}>{user.role}</Table.Td>
-                                <Table.Td width={"10%"} style={{textAlign: "right"}}>
-                                    <Menu shadow="md" width={100}>
-                                        <MenuTarget>
-                                            <ActionIcon variant={"light"} color={"rgba(128,128,128, 1)"}>
-                                                <FiMoreVertical/>
-                                            </ActionIcon>
-                                        </MenuTarget>
-                                        <MenuDropdown>
-                                            <MenuItem leftSection={<FiEdit/>} onClick={() => {
-                                                setSelectedUser(user);
-                                                setEditModalOpen(true);
-                                            }}>
-                                                Edit
-                                            </MenuItem>
-                                            <MenuItem leftSection={<FiTrash2/>} color="red"
-                                                      onClick={() => handleDeleteClick(user.id)}>
-                                                Delete
-                                            </MenuItem>
-                                        </MenuDropdown>
-                                    </Menu>
-                                </Table.Td>
-                            </Table.Tr>
-                        ))}
+                        {fillUserTable()}
                     </Table.Tbody>
                 </Table>
             </Box>
 
             {/* Add User Modal */}
             <Modal size={"sm"}
-                   title={`Add User`}
+                   title={"Add User"}
                    overlayProps={{backgroundOpacity: 0.65, blur: 3,}}
                    opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
                 <AddUserForm onSuccess={handleAddUser}/>
@@ -167,7 +127,7 @@ const UserAdminPage = () => {
             {/* Edit User Modal */}
             {selectedUser && (
                 <Modal
-                    title={`Edit User`}
+                    title={"Edit User"}
                     size={"sm"}
                     overlayProps={{backgroundOpacity: 0.65, blur: 3,}}
                     opened={isEditModalOpen}
@@ -191,7 +151,7 @@ const UserAdminPage = () => {
                     <Button variant={"light"} onClick={() => setConfirmDeleteModal(false)}
                             style={{marginRight: 8}}>Cancel</Button>
                     <Button variant={"outline"} color="red"
-                            onClick={() => userToDelete && deleteUser(userToDelete)}>Delete</Button>
+                            onClick={() => selectedUser && deleteUser(selectedUser)}>Delete</Button>
                 </div>
             </Modal>
 
