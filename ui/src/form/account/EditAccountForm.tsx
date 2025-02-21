@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import {Button, Container, TextInput} from "@mantine/core";
+import {Button, Container, Select, TextInput} from "@mantine/core";
 import {Account} from "../../types/account";
 import AccountService from '../../api/services/AccountService';
 
@@ -65,15 +65,25 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
                     onChange={handleChange}
                     required
                 />
-                <TextInput
+                <Select
                     label={"Account Type"}
                     name="type"
                     radius="md"
                     mb="sm"
-                    type="text"
-                    placeholder="Account Type"
+                    placeholder="Select Account Type"
                     value={accountData.type}
-                    onChange={handleChange}
+                    onChange={(value) =>
+                        setAccountData((prev) => ({
+                            ...prev,
+                            type: value ? (value as "CHECKING" | "SAVINGS" | "CREDIT") : "CHECKING",
+                        }))
+                    }
+                    data={[
+                        { value: 'CHECKING', label: 'Checking' },
+                        { value: 'SAVINGS', label: 'Savings' },
+                        { value: 'CREDIT', label: 'Credit' },
+                    ]}
+                    required
                 />
                 <Button variant="filled" fullWidth color="teal" radius="md" type="submit">
                     Submit

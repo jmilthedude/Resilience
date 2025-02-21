@@ -112,7 +112,7 @@ const AccountAdminPage = () => {
             </div>
             <AddModalButton setAddModalOpen={setAddModalOpen} text={"Add Account"}/>
             <div className={styles.scrollableContainer}>
-                <SimpleGrid cols={{sm: 1, lg: 2}} spacing="sm">{renderAccountCards()}</SimpleGrid>
+                <SimpleGrid cols={accounts.length === 1 ? 1 : {sm: 1, lg: 2}} spacing="sm">{renderAccountCards()}</SimpleGrid>
 
                 {/* Add Account Modal */}
                 <Modal title={"Add Account"} opened={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
