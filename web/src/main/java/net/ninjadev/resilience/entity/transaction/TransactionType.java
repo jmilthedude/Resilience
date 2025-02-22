@@ -1,5 +1,10 @@
 package net.ninjadev.resilience.entity.transaction;
 
 public enum TransactionType {
-    CREDIT, DEBIT
+    DEPOSIT,
+    WITHDRAWAL,
+    PURCHASE,
+    PAYMENT,
+    TRANSFER_IN,
+    TRANSFER_OUT
 }
