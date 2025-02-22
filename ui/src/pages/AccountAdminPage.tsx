@@ -19,6 +19,7 @@ import styles from "./AccountAdminPage.module.css";
 import AccountService from '../api/services/AccountService';
 import AddModalButton from "../components/AddModalButton";
 import {FiEdit, FiMoreVertical, FiTrash2} from "react-icons/fi";
+import {notifications} from "@mantine/notifications";
 
 const AccountAdminPage = () => {
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -59,10 +60,14 @@ const AccountAdminPage = () => {
     const deleteAccount = async (accountId: string) => {
         AccountService.deleteAccount(accountId)
             .then(() => setAccounts((prev) => prev.filter((account) => account.id !== accountId)))
-            .catch((err) => alert(err.message || "An error occurred while trying to delete the account."))
+            .catch((err) => console.error(err.message || "An error occurred while trying to delete the account."))
             .finally(() => {
                 setConfirmDeleteModal(false);
-                alert("Account deleted successfully!");
+                notifications.show({
+                    message: `Account deleted successfully!`,
+                    color: "resilience",
+                    icon: null
+                })
             });
     };
 

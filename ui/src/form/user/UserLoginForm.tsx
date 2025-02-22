@@ -1,9 +1,9 @@
 import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Container, TextInput} from "@mantine/core";
+import {Button, Container} from "@mantine/core";
 import useApi from "../../api/axiosInstance";
 import {useAuth} from "../../auth/AuthProvider";
-import styles from "./UserLoginForm.module.css"
+import StyledTextInput from "../../components/StyledTextInput";
 
 
 const LoginPage = () => {
@@ -30,7 +30,7 @@ const LoginPage = () => {
                 navigate("/users")
             })
             .catch(error => {
-                alert(error.message)
+                console.error(error.message)
             });
     };
 
@@ -38,25 +38,15 @@ const LoginPage = () => {
         <Container size="md" style={{marginTop: "50px", maxWidth: "400px"}}>
             <h2 style={{marginBottom: "5px"}}>Please Login</h2>
             <form onSubmit={handleSubmit}>
-                <TextInput
-                    classNames={{
-                        input: styles.input
-                    }}
-                    style={{marginBottom: "15px"}}
-                    radius="lg"
-                    type="text"
+                <StyledTextInput
+                    inputType="text"
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
                 />
-                <TextInput
-                    classNames={{
-                        input: styles.input
-                    }}
-                    radius="lg"
-                    style={{marginBottom: "15px"}}
-                    type="password"
+                <StyledTextInput
+                    inputType="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

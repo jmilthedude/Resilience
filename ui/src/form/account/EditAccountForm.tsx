@@ -1,7 +1,9 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import {Button, Container, Select, TextInput} from "@mantine/core";
+import {Button, Container, Select} from "@mantine/core";
 import {Account} from "../../types/account";
 import AccountService from '../../api/services/AccountService';
+import StyledTextInput from "../../components/StyledTextInput";
+import {notifications} from "@mantine/notifications";
 
 interface EditAccountFormProps {
     account: Account,
@@ -29,37 +31,35 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
                     const errorMessage = data.message || "An error occurred.";
                     const errorDetails = data.details ? data.details.join("\n") : "";
 
-                    alert(`${errorMessage}\n${errorDetails}`);
+                    console.error(`${errorMessage}\n${errorDetails}`);
                 } else {
-                    alert("An unexpected error occurred. Please try again.");
+                    console.error("An unexpected error occurred. Please try again.");
                 }
             })
             .finally(() => {
                 setAccountData({id: "", name: "", accountNumber: "", type: "CHECKING"})
-                alert("Account updated successfully!");
+                notifications.show({
+                    message: `Account edited successfully!`,
+                    color: "resilience",
+                    icon: null
+                })
             });
     };
 
     return (
         <Container size="md" style={{maxWidth: 400, textAlign: "center"}}>
             <form onSubmit={handleSubmit}>
-                <TextInput
+                <StyledTextInput
                     label={"Account Name"}
                     name="name"
-                    radius="md"
-                    mb="sm"
-                    type="text"
                     placeholder="Name"
                     value={accountData.name}
                     onChange={handleChange}
                     required
                 />
-                <TextInput
+                <StyledTextInput
                     label={"Account Number"}
                     name="accountNumber"
-                    radius="md"
-                    mb="sm"
-                    type="text"
                     placeholder="Account Number"
                     value={accountData.accountNumber}
                     onChange={handleChange}
@@ -69,7 +69,6 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
                     label={"Account Type"}
                     name="type"
                     radius="md"
-                    mb="sm"
                     placeholder="Select Account Type"
                     value={accountData.type}
                     onChange={(value) =>
@@ -85,7 +84,7 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
                     ]}
                     required
                 />
-                <Button variant="filled" fullWidth color="teal" radius="md" type="submit">
+                <Button variant="filled" mt={"xl"} fullWidth color="resilience" radius="md" type="submit">
                     Submit
                 </Button>
             </form>

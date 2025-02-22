@@ -1,5 +1,17 @@
 import {useEffect, useState} from "react";
-import {ActionIcon, Box, Button, Card, Group, LoadingOverlay, Menu, MenuDropdown, MenuItem, MenuTarget, Modal, Table, Text} from "@mantine/core";
+import {
+    ActionIcon,
+    Box,
+    Button,
+    LoadingOverlay,
+    Menu,
+    MenuDropdown,
+    MenuItem,
+    MenuTarget,
+    Modal,
+    Table,
+    Text
+} from "@mantine/core";
 import AddUserForm from "../form/user/AddUserForm";
 import EditUserForm from "../form/user/EditUserForm";
 import {User} from "../types/user";
@@ -7,6 +19,7 @@ import styles from "./UserAdminPage.module.css";
 import UserService from '../api/services/UserService';
 import AddModalButton from "../components/AddModalButton";
 import {FiEdit, FiMoreVertical, FiTrash2} from "react-icons/fi";
+import {notifications} from "@mantine/notifications";
 
 const UserAdminPage = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -30,6 +43,11 @@ const UserAdminPage = () => {
     const handleAddUser = (newUser: User) => {
         setUsers((prev) => [...prev, newUser]);
         setAddModalOpen(false);
+        notifications.show({
+            message: `User added successfully! id=${newUser.id}`,
+            color: "resilience",
+            icon: null
+        })
     };
 
     const handleEditUser = (updatedUser: User) => {
@@ -46,10 +64,14 @@ const UserAdminPage = () => {
     const deleteUser = async (user: User) => {
         UserService.deleteUser(user.id)
             .then(() => setUsers((prev) => prev.filter((u) => u.id !== user.id)))
-            .catch((err) => alert(err.message || "An error occurred while trying to delete the user."))
+            .catch((err) => console.error(err.message || "An error occurred while trying to delete the user."))
             .finally(() => {
                 setConfirmDeleteModal(false);
-                alert("User deleted successfully!");
+                notifications.show({
+                    message: `User deleted successfully! id=${user.id}`,
+                    color: "resilience",
+                    icon: null
+                })
             });
     };
 
@@ -148,7 +170,7 @@ const UserAdminPage = () => {
                    title="Confirm Deletion">
                 <Text>Are you sure you want to delete this user?</Text>
                 <div style={{display: "flex", justifyContent: "flex-end", marginTop: 20}}>
-                    <Button variant={"light"} onClick={() => setConfirmDeleteModal(false)}
+                    <Button variant={"light"} color={"resilience"} onClick={() => setConfirmDeleteModal(false)}
                             style={{marginRight: 8}}>Cancel</Button>
                     <Button variant={"outline"} color="red"
                             onClick={() => selectedUser && deleteUser(selectedUser)}>Delete</Button>

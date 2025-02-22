@@ -4,6 +4,9 @@ import './index.css';
 import App from "./App";
 import {createTheme, MantineProvider} from "@mantine/core";
 import "@mantine/core/styles.css"
+import '@mantine/notifications/styles.css';
+import "./global.css";
+import {Notifications} from '@mantine/notifications';
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -32,6 +35,7 @@ const theme = createTheme({
 
 root.render(
     <MantineProvider theme={theme} defaultColorScheme={"dark"}>
+        <Notifications position={"top-center"} />
         <React.StrictMode>
             <App/>
         </React.StrictMode>

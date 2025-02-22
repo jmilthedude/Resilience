@@ -13,16 +13,18 @@ const AddModalButton = ({setAddModalOpen, text}: {
         <Button
             style={{
                 position: "absolute",
-                right: 20,
-                top: 20,
-                width: isMobile ? 34 : "auto", // Round size on mobile
-                height: isMobile ? 34 : "auto", // Equal height to width for a perfect circle
+                right: isMobile ? "50%" : 20,
+                bottom: isMobile ? 20 : "auto",
+                top: isMobile ? "auto" : 20,
+                width: isMobile ? 60 : "auto", // Round size on mobile
+                height: isMobile ? 60 : "auto", // Equal height to width for a perfect circle
+                transform: isMobile ? "translateX(50%)" : "none", // Center the button
                 borderRadius: isMobile ? "50%" : "5px", // Make it round on mobile
                 padding: isMobile ? 0 : "10px 16px", // Remove padding for the + icon
                 fontSize: isMobile ? "25px" : "inherit", // Larger font size for the + icon
 
             }}
-            color="rgba(0,164,164,1)"
+            color="resilience"
             onClick={() => setAddModalOpen(true)}
         >
             {isMobile ? <FiPlus size={25}/> : text} {/* Show only + icon on mobile */}

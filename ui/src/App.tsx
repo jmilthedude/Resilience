@@ -1,7 +1,6 @@
 import React from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 import UserLoginForm from "./form/user/UserLoginForm";
-import AddUserForm from "./form/user/AddUserForm";
 import UserAdminPage from "./pages/UserAdminPage";
 import AccountAdminPage from "./pages/AccountAdminPage";
 import Layout from "./Layout";
