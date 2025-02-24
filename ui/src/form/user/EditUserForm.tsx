@@ -30,19 +30,6 @@ const EditUserPage = ({user, onSuccess}: EditUserFormProps) => {
         UserService.updateUser(userData.id, userData)
             .then(() => {
                 onSuccess && onSuccess(userData)
-            })
-            .catch(error => {
-                let data = error.response.data;
-                if (data && data.message && data.details) {
-                    const errorMessage = data.message || "An error occurred.";
-                    const errorDetails = data.details ? data.details.join("\n") : "";
-
-                    console.error(`${errorMessage}\n${errorDetails}`);
-                } else {
-                    console.error("An unexpected error occurred. Please try again.");
-                }
-            })
-            .finally(() => {
                 setUserData({id: "", name: "", username: "", password: "", role: "USER"})
                 notifications.show({
                     message: `User updated successfully!`,

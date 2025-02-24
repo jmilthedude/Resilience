@@ -29,16 +29,6 @@ const AddAccountPage = ({onSuccess}: AddAccountFormProps) => {
                     icon: null
                 })
                 setAccountData({id: "", name: "", accountNumber: "", type: "CHECKING"});
-            })
-            .catch(error => {
-                let data = error.response.data;
-                if (data && data.message && data.details) {
-                    const errorMessage = data.message || "An error occurred.";
-                    const errorDetails = data.details ? data.details.join("\n") : "";
-                    console.error(`${errorMessage}\n${errorDetails}`);
-                } else {
-                    console.error("An unexpected error occurred. Please try again.");
-                }
             });
     };
 

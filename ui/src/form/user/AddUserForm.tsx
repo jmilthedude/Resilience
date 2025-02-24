@@ -3,6 +3,7 @@ import {Button, Container} from "@mantine/core";
 import {User} from "../../types/user";
 import UserService from '../../api/services/UserService';
 import StyledTextInput from "../../components/StyledTextInput";
+import {notifications} from "@mantine/notifications";
 
 interface AddUserFormProps {
     onSuccess?: (newUser: User) => void
@@ -23,17 +24,11 @@ const AddUserPage = ({onSuccess}: AddUserFormProps) => {
             .then(response => {
                 onSuccess && onSuccess(response);
                 setUserData({id: "", name: "", username: "", password: "", role: "USER"});
-            })
-            .catch(error => {
-                let data = error.response.data;
-                if (data && data.message && data.details) {
-                    const errorMessage = data.message || "An error occurred.";
-                    const errorDetails = data.details ? data.details.join("\n") : "";
-
-                    console.error(`${errorMessage}\n${errorDetails}`);
-                } else {
-                    console.error("An unexpected error occurred. Please try again.");
-                }
+                notifications.show({
+                    message: `User added successfully! id=${response.id}`,
+                    color: "resilience",
+                    icon: null
+                })
             });
     };
 

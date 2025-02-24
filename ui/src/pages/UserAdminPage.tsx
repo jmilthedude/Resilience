@@ -43,11 +43,6 @@ const UserAdminPage = () => {
     const handleAddUser = (newUser: User) => {
         setUsers((prev) => [...prev, newUser]);
         setAddModalOpen(false);
-        notifications.show({
-            message: `User added successfully! id=${newUser.id}`,
-            color: "resilience",
-            icon: null
-        })
     };
 
     const handleEditUser = (updatedUser: User) => {

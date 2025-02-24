@@ -24,25 +24,12 @@ const EditAccountPage = ({account, onSuccess}: EditAccountFormProps) => {
         AccountService.updateAccount(accountData.id, accountData)
             .then(() => {
                 onSuccess && onSuccess(accountData)
-            })
-            .catch(error => {
-                let data = error.response.data;
-                if (data && data.message && data.details) {
-                    const errorMessage = data.message || "An error occurred.";
-                    const errorDetails = data.details ? data.details.join("\n") : "";
-
-                    console.error(`${errorMessage}\n${errorDetails}`);
-                } else {
-                    console.error("An unexpected error occurred. Please try again.");
-                }
-            })
-            .finally(() => {
-                setAccountData({id: "", name: "", accountNumber: "", type: "CHECKING"})
                 notifications.show({
                     message: `Account edited successfully!`,
                     color: "resilience",
                     icon: null
                 })
+                setAccountData({id: "", name: "", accountNumber: "", type: "CHECKING"})
             });
     };
 
