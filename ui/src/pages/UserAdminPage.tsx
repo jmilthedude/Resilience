@@ -111,11 +111,12 @@ const UserAdminPage = () => {
 
     return (
         <div style={{margin: "0 auto", maxWidth: 800}}>
+            <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
+
             <div className={styles.header}>
                 <h1>User Management</h1>
             </div>
 
-            <AddModalButton setAddModalOpen={setAddModalOpen} text="Add User"/>
             <Box pos={"relative"}>
                 <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{radius: "lg", blur: 2}}/>
                 <Table striped highlightOnHover>

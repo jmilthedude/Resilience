@@ -6,6 +6,7 @@ import AccountAdminPage from "./pages/AccountAdminPage";
 import Layout from "./Layout";
 import PrivateRoute from "./auth/PrivateRoute";
 import {AuthProvider} from "./auth/AuthProvider";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
     return (
@@ -13,7 +14,8 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path="/" element={<Layout />}>
-                        <Route index element={<Navigate to="/users" replace />} />
+                        <Route index element={<Navigate to="/dashboard" replace />} />
+                        <Route path="dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                         <Route path="users" element={<PrivateRoute><UserAdminPage /></PrivateRoute>} />
                         <Route path="accounts" element={<PrivateRoute><AccountAdminPage /></PrivateRoute>} />
                     </Route>

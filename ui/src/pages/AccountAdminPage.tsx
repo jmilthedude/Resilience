@@ -112,10 +112,10 @@ const AccountAdminPage = () => {
 
     return (
         <div style={{margin: "0 auto", maxWidth: 800}}>
+            <AddModalButton setAddModalOpen={setAddModalOpen} text={"Add Account"}/>
             <div className={styles.header}>
                 <h1>Account Management</h1>
             </div>
-            <AddModalButton setAddModalOpen={setAddModalOpen} text={"Add Account"}/>
             <div className={styles.scrollableContainer}>
                 <SimpleGrid cols={accounts.length === 1 ? 1 : {sm: 1, lg: 2}} spacing="sm">{renderAccountCards()}</SimpleGrid>
 

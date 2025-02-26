@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
-import {Outlet, Link} from "react-router-dom"; // To render child routes
-import {AppShell, Burger, NavLink, SimpleGrid} from "@mantine/core";
+import {Outlet} from "react-router-dom"; // To render child routes
+import {AppShell, Burger} from "@mantine/core";
 import {useDisclosure, useMediaQuery} from "@mantine/hooks";
 import {useAuth} from "./auth/AuthProvider";
 import userService from "./api/services/UserService";
 import {User} from "./types/user";
-import {FiBriefcase, FiDollarSign, FiPieChart, FiSettings} from "react-icons/fi";
+import NavLinks from "./components/NavLinks";
 
 const Layout = () => {
     const [opened, {toggle, close}] = useDisclosure(true);
@@ -22,9 +22,7 @@ const Layout = () => {
     }, [isLoggedIn]);
 
     const handleLinkClick = () => {
-        if (isMobile) {
-            close();
-        }
+        close();
     };
 
     if (!isLoggedIn) {
@@ -34,13 +32,16 @@ const Layout = () => {
     return (
         <AppShell
             transitionTimingFunction="ease"
-            transitionDuration={500}
+            transitionDuration={2000}
             navbar={{
-                width: opened ? 225 : 0,
+                width: 0,
                 breakpoint: 'sm',
                 collapsed: {mobile: !opened},
             }}
         >
+            <AppShell.Header style={{height: 60, display: "flex", alignItems: "center", justifyContent: "center"}}>
+
+            </AppShell.Header>
             <Burger
                 style={{
                     position: "absolute",
@@ -53,7 +54,11 @@ const Layout = () => {
                 size="sm"
             />
             <AppShell.Navbar style={{
-                transition: "width 0.5s ease",
+                position: "absolute",
+                width: opened ? 225 : 0,
+                height: "100vh",
+                zIndex: 101,
+                transition: "width 2s ease",
                 overflow: "hidden",
             }}>
                 <div style={{
@@ -70,50 +75,20 @@ const Layout = () => {
                             visibility: opened ? "visible" : "hidden",
                             alignSelf: "right",
                         }}
-                        opened={opened}
+                        opened={true}
                         onClick={toggle}
                         size="sm"
                     />
                 </div>
-                <SimpleGrid cols={1} spacing="xs" style={{marginTop: 20, paddingLeft: 20}}>
-                    <NavLink label={"Dashboard"}
-                             leftSection={<FiPieChart/>}
-                             style={{
-                                 textDecoration: 'none',
-                                 display: "flex",
-                                 alignItems: "center"
-                             }}/>
-                    <NavLink label={"Accounts"}
-                             component={Link} to="/accounts"
-                             leftSection={<FiDollarSign/>}
-                             style={{
-                                 textDecoration: 'none',
-                                 display: "flex",
-                                 alignItems: "center"
-                             }}
-                             onClick={handleLinkClick}/>
-                    {user?.role === 'ADMIN' &&
-                        (
-                            <NavLink label={"Users"}
-                                     component={Link} to="/users"
-                                     leftSection={<FiBriefcase/>}
-                                     style={{
-                                         textDecoration: 'none'
-                                     }}
-                                     onClick={handleLinkClick}/>
-                        )}
-                    <NavLink label={"Settings"}
-                             leftSection={<FiSettings/>}
-                             childrenOffset={40}
-                             style={{
-                                 textDecoration: 'none',
-                                 display: "flex",
-                                 alignItems: "center"
-                             }}>
-                    </NavLink>
-                </SimpleGrid>
+                <NavLinks user={user} handleLinkClick={handleLinkClick}/>
             </AppShell.Navbar>
-            <AppShell.Main><Outlet/></AppShell.Main>
+            <AppShell.Main style={
+                {
+                    paddingTop: 60,
+                    filter: opened ? "blur(2px)" : "none",
+                    transition: "filter 0.5s ease"
+                }
+            }><Outlet/></AppShell.Main>
         </AppShell>
     );
 };

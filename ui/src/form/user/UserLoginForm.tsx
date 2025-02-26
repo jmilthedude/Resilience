@@ -27,7 +27,7 @@ const LoginPage = () => {
         api.postForm("/login", {username, password})
             .then(() => {
                 login();
-                navigate("/users")
+                navigate("/dashboard")
             })
             .catch(error => {
                 console.error(error.message)
@@ -52,7 +52,7 @@ const LoginPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <Button variant="filled" fullWidth={true} color={"resilience"} radius="lg" type="submit">Login</Button>
+                <Button variant="filled" fullWidth={true} color={"resilience"} radius="md" type="submit">Login</Button>
             </form>
         </Container>
     );
